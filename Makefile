@@ -1,13 +1,13 @@
 # List all source files to be compiled; separate with space
 SOURCE_FILES := main.c led.c
 
-# Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
-PROGRAM_WITH_JTAG := no
+# Set this flag to "yes" (no quotes) to use ISP (SPI); otherwise JTAG is used
+PROGRAM_WITH_JTAG :=no
 
 # Feel free to ignore anything below this line
-PROGRAMMER := atmelice_isp
-ifeq ($(PROGRAM_WITH_JTAG), yes)
-	PROGRAMMER := atmelice
+PROGRAMMER := atmelice
+ifeq ($(PROGRAM_WITH_JTAG),yes)
+	PROGRAMMER := atmelice_isp
 endif
 
 BUILD_DIR := build
