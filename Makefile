@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := main.c led.c
+SOURCE_FILES := uart.c main.c
 
 # Set this flag to "yes" (no quotes) to use ISP (SPI); otherwise JTAG is used
 PROGRAM_WITH_JTAG :=no
