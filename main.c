@@ -8,39 +8,34 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "uart.h"
 #include "xmem.h"
-
-#include <stdlib.h>
+#include "joystick.h"
+#include "slider.h"
 
 int main()
 {
-    UART_Init( MYUBRR );
+    UART_init( MYUBRR );
     xmem_init();
-    /*
-    DDRA = 0xFF;
-    DDRE = 0xFF;
-    PORTA = 0;
-    PORTE = 0xFF;
-    */
+    joystick_init();
+    slider_init();
+
+    joystick_pos_t joystick_pos;
+    slider_pos_t slider_pos;
 
     while(1)
     {
-        /* //Exercise 1
-        printf("The value is %d \n", 5);
+        joystick_pos = read_joystick_pos();
+        //printf("Joystick x: %d\n\r", joystick_pos.x);
         _delay_ms(200);
-        */
-        
-       /* //Exercise 2
-        PORTA |= (1 << PA0) | (1 << PA2);
+        //printf("Joystick y: %d\n\r", joystick_pos.y);
         _delay_ms(200);
-        PORTE = 0;
+        slider_pos = read_slider_pos();
+        printf("Slider left: %d\n\r", slider_pos.left_pos);
         _delay_ms(200);
-        PORTA = 0;
-        _delay_ms(200);
-        PORTE = 0xFF;
-        _delay_ms(200);
-        */
+        printf("Slider right: %d\n\r", slider_pos.right_pos);
         _delay_ms(200);
     }
     
