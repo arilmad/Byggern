@@ -2,8 +2,8 @@
 #define _SLIDER_H_
 
 typedef struct{
-    uint8_t left_pos;
-    uint8_t right_pos;
+    int16_t left_pos;
+    int16_t right_pos;
 } slider_pos_t;
 
 void slider_init( void );

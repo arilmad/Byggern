@@ -8,10 +8,10 @@ typedef enum {
     JOY_Y      = 5,
     SLIDER_L   = 6,
     SLIDER_R   = 7
-} adc_channel;
+} adc_channel_t;
 
 void adc_init( void );
-uint8_t adc_read(uint8_t channel);
+int16_t adc_read(uint8_t channel);
 void adc_calibrate( void );
 void pos_read( void );
 
