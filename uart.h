@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-void UART_Init( int ubrr );
-int UART_Transmit( char data, FILE *stream );
-int UART_Receive( FILE *stream );
+void UART_init( int ubrr );
+int UART_transmit( char data, FILE *stream );
+int UART_receive( FILE *stream );
 
 #endif
