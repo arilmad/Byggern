@@ -15,6 +15,12 @@ static joystick_dir_t y_dir;
 
 const int8_t THRESHOLD = 5;
 
+void joystick_set_center( void )
+{
+    x_center = adc_read(JOY_X);
+    y_center = adc_read(JOY_Y);
+}
+
 void joystick_init( void )
 {
     adc_init();
@@ -25,12 +31,6 @@ void joystick_init( void )
     y_min = 10;    
     x_dir = NEUTRAL;
     y_dir = NEUTRAL;
-}
-
-void joystick_set_center( void )
-{
-    x_center = adc_read(JOY_X);
-    y_center = adc_read(JOY_Y);
 }
 
 joystick_pos_t read_joystick_pos( void )
@@ -56,12 +56,21 @@ void joystick_set_dir( joystick_pos_t pos )
     else { y_dir = NEUTRAL; }
 }
 
+void joystick_calibrate(joystick_pos_t pos)
+{
+    if (x_dir == RIGHT) { x_max = max(pos.x, x_max); }
+    else if (x_dir == LEFT) { x_min = min(pos.x, x_min); }
+
+    if (y_dir == UP) { y_max = max(pos.y, y_max); }
+    else if (y_dir == DOWN) { y_min = min(pos.y, y_min); }
+}
 
 joystick_pos_t get_relative_joystick_pos( void )
 {
     joystick_pos_t position = read_joystick_pos();
     joystick_set_dir(position);
     joystick_calibrate(position);
+
 
     if (x_dir == RIGHT) { position.x = (int)((float)(position.x)/x_max*100); }
     else if (x_dir == LEFT) { position.x = (int)((float)position.x/abs(x_min)*100); }
@@ -71,11 +80,9 @@ joystick_pos_t get_relative_joystick_pos( void )
     return position;
 }
 
-void joystick_calibrate(joystick_pos_t pos)
-{
-    if (x_dir == RIGHT) { x_max = max(pos.x, x_max); }
-    else if (x_dir == LEFT) { x_min = min(pos.x, x_min); }
-
-    if (y_dir == UP) { y_max = max(pos.y, y_max); }
-    else if (y_dir == DOWN) { y_min = min(pos.y, y_min); }
+joystick_dir_t get_x_dir(){
+    return x_dir;
+}
+joystick_dir_t get_y_dir(){
+    return y_dir;
 }

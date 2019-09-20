@@ -3,17 +3,16 @@
 #include "adc.h"
 #include "uart.h"
 
-#define ext_adc ((volatile char*) 0x1400)
+#define ext_adc ((volatile char *)0x1400)
 
-
-void adc_init( void )
+void adc_init(void)
 {
-    DDRB &= ~(1<<DDB3);
+    DDRB &= ~(1 << DDB3);
 }
 
-int16_t adc_read(uint8_t channel)
+uint8_t adc_read(uint8_t channel)
 {
     *ext_adc = channel;
     _delay_ms(40);
-    uint16_t adc_read = ext_adc[0];
+    uint8_t adc_read = ext_adc[0];
 }
