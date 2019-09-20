@@ -1,6 +1,7 @@
 #include "adc.h"
 #include "joystick.h"
 #include <stdlib.h>
+#include <avr/io.h>
 
 static uint16_t x_center;
 static uint16_t y_center;
@@ -33,7 +34,7 @@ void joystick_init( void )
     y_dir = NEUTRAL;
 }
 
-joystick_pos_t read_joystick_pos( void )
+joystick_pos_t joystick_red_pos( void )
 {
     joystick_pos_t position;
 
@@ -65,9 +66,9 @@ void joystick_calibrate(joystick_pos_t pos)
     else if (y_dir == DOWN) { y_min = min(pos.y, y_min); }
 }
 
-joystick_pos_t get_relative_joystick_pos( void )
+joystick_pos_t joystick_get_relative_pos( void )
 {
-    joystick_pos_t position = read_joystick_pos();
+    joystick_pos_t position = joystick_red_pos();
     joystick_set_dir(position);
     joystick_calibrate(position);
 
@@ -80,9 +81,20 @@ joystick_pos_t get_relative_joystick_pos( void )
     return position;
 }
 
-joystick_dir_t get_x_dir(){
+joystick_dir_t joystick_get_x_dir(){
     return x_dir;
 }
-joystick_dir_t get_y_dir(){
+joystick_dir_t joystick_get_y_dir(){
     return y_dir;
+}
+
+void joystick_button_init(){
+    DDRB |= (0 << DDB0) | (0 << DDB1) | (0 << DDB2);
+}
+
+int joystick_button_poll() {
+    if (~(PINB) & 1 << PINB2){
+        return 1;
+    }
+    return 0;
 }

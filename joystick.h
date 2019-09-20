@@ -27,8 +27,10 @@ typedef enum
 } joystick_dir_t;
 
 void joystick_init(void);
-joystick_pos_t get_relative_joystick_pos(void);
-joystick_dir_t get_x_dir(void);
-joystick_dir_t get_y_dir(void);
+joystick_pos_t joystick_get_relative_pos(void);
+joystick_dir_t joystick_get_x_dir(void);
+joystick_dir_t joystick_get_y_dir(void);
+void joystick_button_init(void);
+int joystick_button_poll(void);
 
 #endif
