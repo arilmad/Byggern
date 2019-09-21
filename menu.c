@@ -16,7 +16,7 @@ menu_t menu_create_menu_node(char* name)
 }
 
 menu_t menu_get_highlighted_node() {
-	return highlighted_node;
+	return HighlightedNode;
 }
 
 void menu_print_menu(){
@@ -55,5 +55,5 @@ void menu_init()
 	
 	AllTimeHigh->parent = Highscores;
 
-	highlighted_node = Highscores;
+	HighlightedNode = Highscores;
 }
