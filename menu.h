@@ -5,15 +5,16 @@
 
 #include "oled.h"
 
+typedef struct Menu *menu_t;
 
-struct menu_t {
-	struct menu_t* parent;
-	struct menu_t* child;
-	struct menu_t* sibling;
+struct Menu {
 	char* name;
-} *temp;
+	struct Menu* parent;
+	struct Menu* child;
+	struct Menu* sibling;
+};
 
-menu_t* menu_get_highlighted_node(void);
+menu_t menu_get_highlighted_node(void);
 void menu_print(void);
 void menu_init(void);
 
