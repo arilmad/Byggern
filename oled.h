@@ -13,8 +13,8 @@
 
 void oled_init(void);
 void oled_write_data(char c);
-void oled_print(char* c);
-void oled_printf(char* string);
+void oled_print(char* c, uint8_t font_size, uint8_t highlight);
+void oled_printf(char* string, uint8_t font_size, uint8_t highlight);
 void oled_set_brightness(uint8_t lvl);
 void oled_print_arrow(uint8_t row, uint8_t col);
 void oled_pos(uint8_t row, uint8_t col);

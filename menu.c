@@ -15,23 +15,6 @@ menu_t menu_create_menu_node(char* name)
 	return temp;
 }
 
-menu_t menu_get_highlighted_node() {
-	return HighlightedNode;
-}
-
-void menu_print_menu(){
-	menu_t SiblingNode = HighlightedNode->parent->child;
-	uint8_t page = 0;
-	while (1)
-	{
-		oled_pos(page,0);
-		oled_printf(SiblingNode->name);
-		if(SiblingNode->sibling == NULL) { break; }
-		SiblingNode = SiblingNode->sibling;
-		page ++;
-	}
-}
-
 void menu_init()
 {	
 	MainMenu = menu_create_menu_node("Main Menu");
@@ -56,4 +39,72 @@ void menu_init()
 	AllTimeHigh->parent = Highscores;
 
 	HighlightedNode = Highscores;
+}
+
+void menu_set_highlighted_node(joystick_dir_t direction){
+	if (direction == DOWN)
+	{
+		if (HighlightedNode->sibling == NULL)
+		{
+			HighlightedNode = HighlightedNode->parent->child;
+		} else 
+		{
+			HighlightedNode = HighlightedNode->sibling;
+		}
+		
+	} else
+	{
+		menu_t temp = HighlightedNode->parent->child;
+
+		if (temp == HighlightedNode)
+		{
+			while (temp->sibling != NULL)
+			{
+				temp = temp->sibling;
+			}
+		} else
+		{
+			while (temp->sibling != HighlightedNode)
+			{
+				temp = temp->sibling;
+			}
+		}
+
+		HighlightedNode = temp;
+	}
+	menu_print_menu();
+}
+
+
+void menu_print_menu(){
+	menu_t SiblingNode = HighlightedNode->parent->child;
+
+	uint8_t page = 0;
+
+	oled_pos(page,0);
+	oled_printf(HighlightedNode->parent->name, 8, 0);
+
+	page++;
+	oled_pos(page,0);
+
+	for(uint8_t i = 0; i < 16; i++)
+	{
+		oled_printf("-", 8, 0);
+	}
+	page++;
+	while (1)
+	{
+		oled_pos(page,0);
+		if (SiblingNode == HighlightedNode)
+		{
+			oled_printf(SiblingNode->name, 5, 1);
+		} else {
+			oled_printf(SiblingNode->name, 5, 0);
+		}
+
+		if(SiblingNode->sibling == NULL) { break; }
+
+		SiblingNode = SiblingNode->sibling;
+		page ++;
+	}
 }

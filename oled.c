@@ -79,24 +79,37 @@ void oled_init(void)
     oled_reset();
 }
 
-void oled_print(char* c) {
-    uint8_t font_val = (int)(c) - ASCII_OFFSET;
-    for(int i = 0; i < 8; i++){
-        oled_write_data(pgm_read_byte(&(font8[font_val][i])));     
+void oled_print(char* c, uint8_t font_size, uint8_t highlight) {
+    uint8_t font_val = (int)(*c) - ASCII_OFFSET;
+
+  
+    for(int i = 0; i < font_size; i++)
+    {
+        if (highlight)
+        {
+            oled_write_data(~pgm_read_byte(&(font5[font_val][i])));             
+        } else if (font_size == 8)
+        {
+            oled_write_data(pgm_read_byte(&(font8[font_val][i])));  
+        } else
+        {
+            oled_write_data(pgm_read_byte(&(font5[font_val][i])));  
+        }  
     }
 }
 
-void oled_printf(char* string) {
+void oled_printf(char* string, uint8_t font_size, uint8_t highlight) {
     int i = 0;
     while (1){
-        char* c = string[i];
+        char c = string[i];
         if(c == '\0'){
             break;
         }
         i++;
-        oled_print(c);
+        oled_print(&c, font_size, highlight);
     }
 }
+
 
 
 void oled_print_arrow(uint8_t row, uint8_t col)

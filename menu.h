@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "oled.h"
+#include "joystick.h"
 
 typedef struct Menu *menu_t;
 
@@ -15,8 +16,8 @@ struct Menu {
 	struct Menu* sibling;
 };
 
-menu_t menu_get_highlighted_node(void);
-void menu_print(void);
+void menu_set_highlighted_node(joystick_dir_t direction);
+void menu_print_menu(void);
 void menu_init(void);
 
 

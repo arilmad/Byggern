@@ -29,13 +29,26 @@ int main()
     oled_init();
     _delay_ms(40);
 	menu_init();
-	menu_print();
+	menu_print_menu();
+
+    joystick_init();
+
+    joystick_dir_t dir;
+
+    int num_loops = 0;
 
     while (1)
     {
-    	
+        joystick_get_relative_pos();
+        dir = joystick_get_y_dir();
 
+        if (dir != NEUTRAL && num_loops > 10)
+        {
+            menu_set_highlighted_node(dir);
+            num_loops = 0;
+        }
 
+        num_loops++;
         _delay_ms(20);
     }
     return 0;
