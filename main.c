@@ -17,6 +17,7 @@
 #include "slider.h"
 #include "oled.h"
 #include "menu.h"
+#include "bitmaps.h"
 
 
 int main()
@@ -29,24 +30,45 @@ int main()
     oled_init();
     _delay_ms(40);
 	menu_init();
-	menu_print_menu();
 
     joystick_init();
 
     joystick_dir_t dir;
 
-    int num_loops = 0;
+    menu_t node;
 
+
+    const unsigned char picture = harald;
+    oled_print_bitmap(harald);
+    oled_print_welcome_message();
+
+
+    int num_loops = 0;
+    uint8_t enter_menu = 1;
     while (1)
     {
+
         joystick_get_relative_pos();
         dir = joystick_get_y_dir();
 
         if (dir != NEUTRAL && num_loops > 10)
         {
-            menu_set_highlighted_node(dir);
+            if (enter_menu)
+            {
+                oled_reset();
+                menu_print_menu();
+                enter_menu = 0;
+            }
+
+            menu_scroll_highlighted_node(dir);
             num_loops = 0;
         }
+
+        if (joystick_button_poll() && num_loops > 10){
+            menu_change_menu_level();
+            num_loops = 0;
+        }
+
 
         num_loops++;
         _delay_ms(20);

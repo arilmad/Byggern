@@ -1,7 +1,10 @@
 #include "menu.h"
-
+#include <stdlib.h>
+#include <string.h>
 menu_t MainMenu;
 menu_t HighlightedNode;
+menu_t Back;
+
 
 
 menu_t menu_create_menu_node(char* name)
@@ -18,12 +21,14 @@ menu_t menu_create_menu_node(char* name)
 void menu_init()
 {	
 	MainMenu = menu_create_menu_node("Main Menu");
+	Back = menu_create_menu_node("Back");
 
 	menu_t Highscores = menu_create_menu_node("Highscores");
 	menu_t PlayManual = menu_create_menu_node("Play Manual Game");
 	menu_t PlayAuto = menu_create_menu_node("Play Autonomously");
 
 	menu_t AllTimeHigh = menu_create_menu_node("All Time Highs");
+
 
 	MainMenu->child = Highscores;
 
@@ -37,11 +42,12 @@ void menu_init()
 	PlayAuto->parent = MainMenu;
 	
 	AllTimeHigh->parent = Highscores;
+	AllTimeHigh->sibling = Back;
 
 	HighlightedNode = Highscores;
 }
 
-void menu_set_highlighted_node(joystick_dir_t direction){
+void menu_scroll_highlighted_node(joystick_dir_t direction){
 	if (direction == DOWN)
 	{
 		if (HighlightedNode->sibling == NULL)
@@ -72,6 +78,19 @@ void menu_set_highlighted_node(joystick_dir_t direction){
 
 		HighlightedNode = temp;
 	}
+	menu_print_menu();
+}
+
+void menu_change_menu_level()
+{
+	if(HighlightedNode == Back){
+		HighlightedNode = HighlightedNode->parent;
+	} else if (HighlightedNode->child != NULL)
+	{
+		Back->parent = HighlightedNode;
+		HighlightedNode = HighlightedNode->child;
+	}
+	oled_reset();
 	menu_print_menu();
 }
 
@@ -107,4 +126,5 @@ void menu_print_menu(){
 		SiblingNode = SiblingNode->sibling;
 		page ++;
 	}
+
 }

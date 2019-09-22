@@ -16,7 +16,9 @@ struct Menu {
 	struct Menu* sibling;
 };
 
-void menu_set_highlighted_node(joystick_dir_t direction);
+void menu_scroll_highlighted_node(joystick_dir_t direction);
+void menu_change_menu_level(void);
+
 void menu_print_menu(void);
 void menu_init(void);
 

@@ -110,14 +110,32 @@ void oled_printf(char* string, uint8_t font_size, uint8_t highlight) {
     }
 }
 
-
-
-void oled_print_arrow(uint8_t row, uint8_t col)
+void oled_print_bitmap(const unsigned char* bitmap)
 {
-    oled_pos(row, col);
-    oled_write_data(0b01101100);
-    oled_write_data(0b01101100);
-    oled_write_data(0b00011000);    
-    oled_write_data(0b00011000);
-    oled_write_data(0b00011000);
+    uint8_t page = 0;
+    oled_pos(page,0);
+    for(uint16_t i = 0; i < (128 * 8); i++) 
+    {
+        oled_write_data(pgm_read_byte(&(bitmap[i])));
+        if (!((i+1) % 128))
+        {
+            page++;
+            oled_pos(page, 0);
+        }
+    }
+
+}
+
+void oled_print_welcome_message(void)
+{
+    oled_pos(0, 0);
+    oled_printf("Welcome!", 5, 0);
+    oled_pos(1, 0);
+    oled_printf("Scroll up", 5, 0);
+    oled_pos(2, 0);
+    oled_printf("or down", 5, 0);
+    oled_pos(3, 0);
+    oled_printf("to enter", 5, 0);
+    oled_pos(4, 0);
+    oled_printf("Main Menu", 5, 0);
 }

@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := menu.c fonts.c oled.c slider.c joystick.c adc.c uart.c xmem.c main.c
+SOURCE_FILES := harald.c menu.c fonts.c oled.c slider.c joystick.c adc.c uart.c xmem.c main.c
 
 # Set this flag to "yes" (no quotes) to use ISP (SPI); otherwise JTAG is used
 PROGRAM_WITH_JTAG :=no
