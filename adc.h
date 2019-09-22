@@ -11,7 +11,6 @@ typedef enum
     SLIDER_R = 7
 } adc_channel_t;
 
-void adc_init(void);
 uint8_t adc_read(uint8_t channel);
 void adc_calibrate(void);
 void pos_read(void);

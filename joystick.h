@@ -1,6 +1,14 @@
 #ifndef _JOYSTICK_H_
 #define _JOYSTICK_H_
 
+#include <avr/interrupt.h>
+#include <stdlib.h>
+#include <avr/io.h>
+
+#include "uart.h"
+#include "adc.h"
+
+
 #define max(a, b) \
     ({ __typeof__ (a) _a = (a); \
         __typeof__ (b) _b = (b); \
@@ -10,6 +18,9 @@
     ({ __typeof__ (a) _a = (a); \
         __typeof__ (b) _b = (b); \
         _a < _b ? _a : _b; })
+
+
+volatile int joystick_button_pressed;
 
 typedef struct
 {
@@ -30,7 +41,6 @@ void joystick_init(void);
 joystick_pos_t joystick_get_relative_pos(void);
 joystick_dir_t joystick_get_x_dir(void);
 joystick_dir_t joystick_get_y_dir(void);
-void joystick_button_init(void);
 int joystick_button_poll(void);
 
 #endif

@@ -10,6 +10,8 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <avr/interrupt.h>
+
 
 #include "uart.h"
 #include "xmem.h"
@@ -23,22 +25,18 @@
 int main()
 {
 
-
-
     UART_init(MYUBRR);
     xmem_init();
     oled_init();
     _delay_ms(40);
 	menu_init();
-
     joystick_init();
 
     joystick_dir_t dir;
 
     menu_t node;
 
-
-    const unsigned char picture = harald;
+    const unsigned char* picture = harald;
     oled_print_bitmap(harald);
     oled_print_welcome_message();
 
@@ -64,9 +62,10 @@ int main()
             num_loops = 0;
         }
 
-        if (joystick_button_poll() && num_loops > 10){
+        if (joystick_button_pressed)
+        {
             menu_change_menu_level();
-            num_loops = 0;
+            joystick_button_pressed = 0;
         }
 
 

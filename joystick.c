@@ -1,7 +1,5 @@
-#include "adc.h"
 #include "joystick.h"
-#include <stdlib.h>
-#include <avr/io.h>
+
 
 static uint16_t x_center;
 static uint16_t y_center;
@@ -16,6 +14,21 @@ static joystick_dir_t y_dir;
 
 const int8_t THRESHOLD = 5;
 
+ISR (INT0_vect)
+{
+    joystick_button_pressed = 1;
+}
+
+void joystick_interrupt_init( void )
+{
+
+
+    GICR |= (1<<INT0);
+    MCUCR |= (1<<ISC01)|(0<<ISC00);
+
+    sei();
+}
+
 void joystick_set_center( void )
 {
     x_center = adc_read(JOY_X);
@@ -24,7 +37,7 @@ void joystick_set_center( void )
 
 void joystick_init( void )
 {
-    adc_init();
+    joystick_interrupt_init();
     joystick_set_center();
     x_max = -10;
     y_max = -10;
@@ -86,10 +99,6 @@ joystick_dir_t joystick_get_x_dir(){
 }
 joystick_dir_t joystick_get_y_dir(){
     return y_dir;
-}
-
-void joystick_button_init(){
-    DDRB |= (0 << DDB0) | (0 << DDB1) | (0 << DDB2);
 }
 
 int joystick_button_poll() {
