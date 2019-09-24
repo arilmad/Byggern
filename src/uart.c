@@ -1,7 +1,4 @@
 #include "uart.h"
-#include <avr/io.h>
-
-
 
 void UART_init( int ubrr )
 {

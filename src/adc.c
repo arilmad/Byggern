@@ -1,10 +1,6 @@
-#include <avr/io.h>
-#include <util/delay.h>
 #include "adc.h"
-#include "uart.h"
 
 #define ext_adc ((volatile char *)0x1400)
-
 
 uint8_t adc_read(uint8_t channel)
 {

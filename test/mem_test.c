@@ -1,7 +1,4 @@
-#include <stdlib.h>
-#include <stdint.h>
 #include "mem_test.h"
-#include "uart.h"
 
 void SRAM_test(void)
 {

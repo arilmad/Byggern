@@ -19,7 +19,7 @@
 #include "slider.h"
 #include "oled.h"
 #include "menu.h"
-#include "bitmaps.h"
+#include "../assets/bitmaps.h"
 
 
 int main()

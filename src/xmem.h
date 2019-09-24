@@ -1,8 +1,8 @@
-#include <stdint.h>
-#include <avr/io.h>
-
 #ifndef _XMEM_H_
 #define _XMEM_H_
+
+#include <stdint.h>
+#include <avr/io.h>
 
 typedef enum
 {

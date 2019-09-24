@@ -1,7 +1,10 @@
 #ifndef _ADC_H_
 #define _ADC_H_
 
+#include <avr/io.h>
+#include <util/delay.h>
 #include <stdint.h>
+
 
 typedef enum
 {
