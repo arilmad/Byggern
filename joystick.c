@@ -21,12 +21,9 @@ ISR (INT0_vect)
 
 void joystick_interrupt_init( void )
 {
-
-
     GICR |= (1<<INT0);
-    MCUCR |= (1<<ISC01)|(0<<ISC00);
-
-    sei();
+    MCUCR |= (1<<ISC01);
+    MCUCR &= ~(1<<ISC00);
 }
 
 void joystick_set_center( void )

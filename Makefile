@@ -1,5 +1,8 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := harald.c menu.c fonts.c oled.c slider.c joystick.c adc.c uart.c xmem.c main.c
+SOURCE_FILES := MCP2515.c spi.c bitmaps.c fonts.c menu.c oled.c slider.c joystick.c adc.c uart.c xmem.c main.c
+
+ASSET_DIR := ./assets
+SOURCE_DIR := ./src
 
 # Set this flag to "yes" (no quotes) to use ISP (SPI); otherwise JTAG is used
 PROGRAM_WITH_JTAG :=no
@@ -26,6 +29,7 @@ $(BUILD_DIR):
 
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
+
 
 $(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out

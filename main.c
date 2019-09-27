@@ -12,14 +12,15 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
-
+#include "MCP2515.h"
 #include "uart.h"
 #include "xmem.h"
 #include "joystick.h"
 #include "slider.h"
 #include "oled.h"
 #include "menu.h"
-#include "../assets/bitmaps.h"
+#include "bitmaps.h"
+
 
 
 int main()
@@ -32,6 +33,8 @@ int main()
 	menu_init();
     joystick_init();
 
+    mcp2515_init();
+
     joystick_dir_t dir;
 
     menu_t node;
@@ -43,13 +46,14 @@ int main()
 
     int num_loops = 0;
     uint8_t enter_menu = 1;
+    sei();
     while (1)
     {
 
         joystick_get_relative_pos();
         dir = joystick_get_y_dir();
 
-        if (dir != NEUTRAL && num_loops > 10)
+        if (dir != NEUTRAL && num_loops > 5)
         {
             if (enter_menu)
             {
@@ -70,6 +74,7 @@ int main()
 
 
         num_loops++;
+        mcp2515_write(MCP_TX0IF, 'A');
         _delay_ms(20);
     }
     return 0;
