@@ -3,7 +3,7 @@
 
 #define F_CPU 4915200
 
-#include <avr/delay.h>
+#include <util/delay.h>
 
 #include "spi.h"
 
@@ -73,6 +73,11 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TXB2CTRL 0x50
 #define MCP_RXB0CTRL 0x60
 #define MCP_RXB0SIDH 0x61
+#define MCP_RXB0SIDL 0x62
+#define MCP_RXB0DLC 0x65
+#define MCP_RXB0D0 0x66
+
+
 #define MCP_RXB1CTRL 0x70
 #define MCP_RXB1SIDH 0x71
 
@@ -164,7 +169,7 @@ void mcp2515_reset(void);
 char mcp2515_read(char address);
 void mcp2515_write(char address, char data);
 void mcp2515_modify(char address, char mask, char mode);
-char mcp2515_status(char address);
+char mcp2515_status(void);
 void mcp2515_rts(char buffer);
 
 #endif

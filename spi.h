@@ -1,8 +1,9 @@
 #ifndef __SPI_H__
 #define __SPI_H__
 
-#include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/io.h>
+
 
 volatile int spi_interrupt_flag;
 

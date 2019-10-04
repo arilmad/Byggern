@@ -42,7 +42,7 @@ void mcp2515_modify(char address, char mask, char mode)
     spi_deactivate_chipselect();
 }
 
-char mcp2515_status(char address)
+char mcp2515_status(void)
 {
     char status;
     spi_activate_chipselect();

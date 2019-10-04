@@ -1,6 +1,6 @@
 #include "spi.h"
 
-ISR(INT1_vect)
+ISR(INT2_vect)
 {
     spi_interrupt_flag = 1;
 }
@@ -16,8 +16,9 @@ void spi_interrupt_init(void)
 void spi_init(void)
 {
     DDRB |= (1 << PB5) | (1 << PB7) | (1 << PB4);
-    SPCR |= (1 << SPE) | (1 << MSTR) | (1<<SPR0) | (1<<SPR1);
+    SPCR |= (1 << SPE) | (1 << MSTR) | (1<<SPR0);
     //SPCR &= ~(1 << SPR1) | (1<<SPR0);
+    PORTB |= (1<<PB4);
     spi_interrupt_init();
 }
 
@@ -30,9 +31,6 @@ void spi_deactivate_chipselect(void)
 {
     PORTB |= (1 << PB4);
 }
-//TODO: Make a timeer interrupt routine.
-
-//TODO: Enable interrupt on SPIF
 
 //Sends one byte of data on the serial line.
 void spi_transmit(char data)
@@ -47,6 +45,7 @@ void spi_transmit(char data)
 //Receives one byte of data at the time.
 char spi_receive(void)
 {
+    spi_transmit(0xFF);
     while (!(SPSR & (1 << SPIF)))
         ;
     return SPDR;

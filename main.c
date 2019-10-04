@@ -4,7 +4,6 @@
 #define BAUD 9600
 #define MYUBRR FOSC / 16 / BAUD - 1
 
-
 #include <stdint.h>
 #include <avr/io.h>
 #include <util/delay.h>
@@ -12,7 +11,7 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
-#include "MCP2515.h"
+#include "can_driver.h"
 #include "uart.h"
 #include "xmem.h"
 #include "joystick.h"
@@ -21,8 +20,6 @@
 #include "menu.h"
 #include "bitmaps.h"
 
-
-
 int main()
 {
 
@@ -30,22 +27,30 @@ int main()
     xmem_init();
     oled_init();
     _delay_ms(40);
-	menu_init();
+    menu_init();
     joystick_init();
 
-    mcp2515_init();
+    can_init();
 
     joystick_dir_t dir;
 
     menu_t node;
 
-    const unsigned char* picture = harald;
+    const unsigned char *picture = harald;
     oled_print_bitmap(harald);
     oled_print_welcome_message();
 
-
     int num_loops = 0;
     uint8_t enter_menu = 1;
+
+    can_message_t message1 = {1, 2, "M1"};
+    can_message_t message2 = {2, 2, "M2"};
+    can_message_t message3 = {3, 2, "M3"};
+
+    can_message_t response;
+
+    char status;
+    //   printf("%s\n\r", message1.data);
     sei();
     while (1)
     {
@@ -61,8 +66,10 @@ int main()
                 menu_print_menu();
                 enter_menu = 0;
             }
-
-            menu_scroll_highlighted_node(dir);
+            else
+            {
+                menu_scroll_highlighted_node(dir);
+            }
             num_loops = 0;
         }
 
@@ -72,10 +79,38 @@ int main()
             joystick_button_pressed = 0;
         }
 
+        /*
+            CAN_INTE vil du enable interrupts på 
+
+            mottatt melding? Sjekk CAN_INTF register om melding mottatt 
+                les melding få data
+            sette CAN_INTF lav igjen
+
+        */
+
+
+        can_message_send(&message2);
+        _delay_ms(10);
+        can_message_read(&response);
+        printf("%s\n\r", response.data);
+        _delay_ms(10);
+        can_message_send(&message1);
+        _delay_ms(10);
+
+        can_message_read(&response);
+        printf("%s\n\r", response.data);
+        _delay_ms(10);
+
+        can_message_send(&message3);
+        _delay_ms(10);
+        can_message_read(&response);
+        printf("%s\n\r", response.data);
+        _delay_ms(10);
 
         num_loops++;
-        mcp2515_write(MCP_TX0IF, 'A');
-        _delay_ms(20);
+        // status = mcp2515_read(MCP_CANSTAT);
+         _delay_ms(20);
+        // printf("%x\n\r", status);
     }
     return 0;
 }

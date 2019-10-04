@@ -3,6 +3,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/common.h>
 
 #include "spi.h"
 #include "MCP2515.h"
@@ -17,7 +18,7 @@ typedef struct can_message
 } can_message_t;
 
 void can_init(void);
-void can_message_write(can_message_t* message);
-can_message_t* can_message_read(void);
+void can_message_send(can_message_t* message);
+uint8_t can_message_read(can_message_t* message);
 
 #endif

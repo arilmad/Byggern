@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := MCP2515.c spi.c bitmaps.c fonts.c menu.c oled.c slider.c joystick.c adc.c uart.c xmem.c main.c
+SOURCE_FILES := can_driver.c MCP2515.c spi.c bitmaps.c fonts.c menu.c oled.c slider.c joystick.c adc.c uart.c xmem.c main.c
 
 ASSET_DIR := ./assets
 SOURCE_DIR := ./src
