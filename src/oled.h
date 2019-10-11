@@ -10,7 +10,6 @@
 
 #include "xmem.h"
 #include "uart.h"
-#include "fonts.h"
 
 //TODO: Create an update function that updates the oled to a screen from memory
 

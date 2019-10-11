@@ -11,14 +11,14 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
-#include "can_driver.h"
+#include "../lib/can/can_driver.h"
+#include "../assets/bitmaps.h"
 #include "uart.h"
 #include "xmem.h"
 #include "joystick.h"
 #include "slider.h"
 #include "oled.h"
 #include "menu.h"
-#include "bitmaps.h"
 
 int main()
 {
