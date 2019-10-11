@@ -6,7 +6,7 @@
 #include <avr/common.h>
 
 #include "../spi/spi.h"
-#include "../../src/MCP2515.h"
+#include "MCP2515.h"
 
 volatile int can_interrupt_flag;
 
