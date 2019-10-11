@@ -2,7 +2,7 @@
 #define __OLED_H__
 
 #define ASCII_OFFSET 32
-#include "fonts.h"
+#include "../assets/fonts.h"
 
 #include <stdint.h>
 #include <avr/pgmspace.h>

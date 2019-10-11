@@ -5,7 +5,7 @@
 
 #include <util/delay.h>
 
-#include "spi.h"
+#include "../lib/spi/spi.h"
 
 /*
 mcp2515.h

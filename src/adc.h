@@ -1,6 +1,8 @@
 #ifndef _ADC_H_
 #define _ADC_H_
 
+#define F_CPU 4915200
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdint.h>
