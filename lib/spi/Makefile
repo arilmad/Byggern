@@ -1,6 +1,6 @@
-SOURCE_FILES := bitmaps.c fonts.c
+SOURCE_FILES := spi.c
 
-BUILD_DIR := ../build
+BUILD_DIR := ../../build
 TARGET_CPU := atmega162
 
 CC := avr-gcc
