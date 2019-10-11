@@ -3,6 +3,8 @@
 
 #define ASCII_OFFSET 32
 
+#include "../assets/fonts.h"
+
 #include <stdint.h>
 #include <avr/pgmspace.h>
 
