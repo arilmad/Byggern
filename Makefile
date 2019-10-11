@@ -5,6 +5,8 @@ LIB_CAN := ./lib/can
 
 LIBRARIES := $(LIB_SPI) $(LIB_CAN)
 
+SUBDIRS := $(SOURCE_DIR) $(ASSETS_DIR) $(LIBRARIES)
+
 # Set this flag to "yes" (no quotes) to use ISP (SPI); otherwise JTAG is used
 PROGRAM_WITH_JTAG :=no
 
@@ -21,25 +23,30 @@ TARGET_DEVICE := m162
 CC := avr-gcc
 CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU)
 
-OBJECT_FILES := $(wildcard $(BUILD_DIR)/*.o)
+
 
 .DEFAULT_GOAL := $(BUILD_DIR)/main.hex
+
+.PHONY = flash fuse clean erase
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
 
-.PHONY = all flash fuse clean erase
+.PHONY: subdirs $(SUBDIRS)
 
-$(SOURCE_DIR) $(LIBRARIES) $(ASSETS_DIR):
-	$(MAKE) --directory=$@
+subdirs: $(SUBDIRS)
 
-$(BUILD_DIR)/main.hex: $(OBJECT_FILES) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+OBJECT_FILES = $(wildcard $(BUILD_DIR)/*.o)
+
+$(BUILD_DIR)/main.hex: $(SUBDIRS) $(OBJECT_FILES) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(BUILD_DIR)/*.o -o $(BUILD_DIR)/a.out
 	avr-objcopy -j .text -j .data -O ihex $(BUILD_DIR)/a.out $(BUILD_DIR)/main.hex
 
-all: $(SOURCE_DIR) $(LIBRARIES) $(ASSETS_DIR)
 
-flash: $(BUILD_DIR)/main.hex
+flash: $(SUBDIRS) $(BUILD_DIR)/main.hex
 	avrdude -p $(TARGET_DEVICE) -c $(PROGRAMMER) -U flash:w:$(BUILD_DIR)/main.hex:i
 
 fuse:

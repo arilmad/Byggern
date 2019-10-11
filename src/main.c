@@ -11,14 +11,14 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
-#include "can_driver.h"
+#include "../lib/can/can_driver.h"
 #include "uart.h"
 #include "xmem.h"
 #include "joystick.h"
 #include "slider.h"
 #include "oled.h"
 #include "menu.h"
-#include "bitmaps.h"
+#include "../assets/bitmaps.h"
 
 int main()
 {
@@ -87,7 +87,6 @@ int main()
             sette CAN_INTF lav igjen
 
         */
-
 
         can_message_send(&message2);
         _delay_ms(10);
