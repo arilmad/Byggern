@@ -1,12 +1,17 @@
 #ifndef __SPI_H__
 #define __SPI_H__
 
+#include <avr/interrupt.h>
 #include <avr/io.h>
 
-void spi_master_init(void);
-void spi_slave_init(void);
 
-void spi_master_transmit(char data);
-char spi_slave_receive(void);
+volatile int spi_interrupt_flag;
+
+void spi_init(void);
+
+void spi_transmit(char data);
+char spi_receive(void);
+void spi_activate_chipselect(void);
+void spi_deactivate_chipselect(void);
 
 #endif

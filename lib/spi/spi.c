@@ -1,35 +1,53 @@
 #include "spi.h"
 
+ISR(INT2_vect)
+{
+    spi_interrupt_flag = 1;
+}
+
+void spi_interrupt_init(void)
+{
+    GICR |= (1 << INT1);
+    MCUCR |= (1 << ISC11);
+    MCUCR &= ~(1 << ISC10);
+}
+
 //Initializes the Atmega162 to be a master.
-void spi_master_init(void)
+void spi_init(void)
 {
-    DDR_SPI = (1<<DD_MOSI) | (1<<DD_SCK);
-    SPCR = (1<<SPE) | (1<<MSTR)  (1<<SPR0);
-}
-//Initializes the Atmega162 to be a slave.
-void spi_slave_init(void)
-{
-    DDR_SPI = (1<<DD_MISO);
-    SPCR = (1<<SPE);
+    DDRB |= (1 << PB5) | (1 << PB7) | (1 << PB4);
+    SPCR |= (1 << SPE) | (1 << MSTR) | (1<<SPR0);
+    //SPCR &= ~(1 << SPR1) | (1<<SPR0);
+    PORTB |= (1<<PB4);
+    spi_interrupt_init();
 }
 
-//TODO: Make a timeer interrupt routine.
+void spi_activate_chipselect(void)
+{
+    PORTB &= ~(1 << PB4);
+}
 
-//TODO: Enable interrupt on SPIF
+void spi_deactivate_chipselect(void)
+{
+    PORTB |= (1 << PB4);
+}
 
 //Sends one byte of data on the serial line.
-void spi_master_transmit(char data)
+void spi_transmit(char data)
 {
     //Maybe configure ~SS as an output to make sure this device is always a master.
     //Otherwise it might become a slave when ~SS is driven low by another device.
     SPDR = data;
-    while(!(SPSR & (1<<SPIF)));
+    while (!(SPSR & (1 << SPIF)))
+        ;
 }
 
 //Receives one byte of data at the time.
-char spi_slave_receive(void)
+char spi_receive(void)
 {
-    //Configure ~SS as an input?
-    while(!(SPSR & (1<<SPIF)));
+    spi_transmit(0xFF);
+    while (!(SPSR & (1 << SPIF)))
+        ;
     return SPDR;
 }
+
