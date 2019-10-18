@@ -23,6 +23,8 @@ ifeq ($(N),2)
 	SOURCE_DIR := ./src/node2
 	BUILD_DIR := build_node2
 
+	ASSETS_DIR :=
+
 	TARGET_CPU := atmega2560
 	TARGET_DEVICE := m2560
 endif
