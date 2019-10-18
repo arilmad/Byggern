@@ -3,6 +3,7 @@
 #define FOSC 4915200 // Clock Speed
 #define BAUD 9600
 #define MYUBRR FOSC / 16 / BAUD - 1
+#define TEN_MS 0.01 / 1 / FOSC / 1024;
 
 #include <stdint.h>
 #include <avr/io.h>
@@ -11,14 +12,16 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
-#include "../../lib/can/can_driver.h"
 #include "../../lib/uart/uart.h"
+#include "../../lib/can/can_driver.h"
 #include "../../assets/bitmaps.h"
 #include "xmem.h"
 #include "joystick.h"
 #include "slider.h"
 #include "oled.h"
 #include "menu.h"
+
+void T0delay();
 
 int main()
 {
@@ -32,33 +35,38 @@ int main()
 
     can_init();
 
-    joystick_dir_t current_x_dir = NEUTRAL;
-    joystick_dir_t current_y_dir = NEUTRAL;
+    joystick_dir_t joystick_x_dir, joystick_y_dir;
+    joystick_pos_t joystick_current_pos, joystick_new_pos;
 
-    joystick_dir_t new_x_dir;
-    joystick_dir_t new_y_dir;
+    can_message_t can_joystick_pos = {NULL, 8, NULL};
 
-    menu_t node;
+    can_message_t can_receive;
 
     const unsigned char *picture = harald;
     oled_print_bitmap(harald);
+
     oled_print_welcome_message();
 
-    int num_loops = 0;
     uint8_t enter_menu = 1;
-
 
     sei();
 
+    joystick_current_pos = joystick_get_relative_pos();
+
+    
+
     while (1)
     {
+        
+        /*
+        joystick_new_pos = joystick_get_relative_pos();
 
-        joystick_get_relative_pos();
+        joystick_x_dir = joystick_get_x_dir();
+        joystick_y_dir = joystick_get_y_dir();
 
-        new_x_dir = joystick_get_x_dir();
-        new_y_dir = joystick_get_y_dir();
+        ms_elapsed = (int)(clock() - clock_start)/CLOCKS_PER_SEC/1000;
 
-        if (new_y_dir != NEUTRAL && num_loops > 5)
+        if (joystick_y_dir != NEUTRAL && ms_elapsed > 10)
         {
             if (enter_menu)
             {
@@ -68,9 +76,10 @@ int main()
             }
             else
             {
-                menu_scroll_highlighted_node(new_y_dir);
+                menu_scroll_highlighted_node(joystick_y_dir);
             }
-            num_loops = 0;
+
+            clock_start = clock();
         }
 
         if (joystick_button_pressed)
@@ -78,6 +87,7 @@ int main()
             menu_change_menu_level();
             joystick_button_pressed = 0;
         }
+        */
 
         /*
             CAN_INTE vil du enable interrupts på 
@@ -87,23 +97,62 @@ int main()
             sette CAN_INTF lav igjen
 
         */
+        /*
+        if (joystick_new_pos.x != joystick_current_pos.x)
+        {
+            can_joystick_pos.id = 1;
+            can_joystick_pos.data[0] = (0xFF & joystick_new_pos.x);
 
-       if (new_x_dir != current_x_dir)
-       {
-           can_message_t can_joystick_x_pos = {1, 3, (char *)(new_x_dir)}; // id 1 for x pos. // Fix declaration?
-           can_message_send(&can_joystick_x_pos);
-           current_x_dir = new_x_dir;
-       }
+            can_message_send(&can_joystick_pos);
 
-       if (new_y_dir != current_y_dir)
-       {
-           can_message_t can_joystick_y_pos = {2, 3, (char *)(new_x_dir)}; // id 2 for y pos
-           can_message_send(&can_joystick_y_pos);
-           current_y_dir = new_y_dir;
-       }
+            joystick_current_pos.x = joystick_new_pos.x;
+            printf("%s\n\r", "Sent new x dir via CAN");
+        }
 
-        num_loops++;
-         _delay_ms(20);
+        _delay_ms(10);
+        */
+        /*
+        if (!(can_message_read(&can_receive)))
+        {
+            printf("%d\n\r", can_receive.data[0]);
+        }
+
+        _delay_ms(10);
+        */
+        /*
+        if (joystick_new_pos.y != joystick_current_pos.y)
+        {
+            can_joystick_pos.id = 2; // id 2 for y pos
+            can_joystick_pos.data[0] = (0xFF & joystick_new_pos.y);
+
+            can_message_send(&can_joystick_pos);
+            joystick_current_pos.y = joystick_new_pos.y;
+            printf("%s\n\r", "Sent new y dir via CAN");
+        }
+        */
+        /*
+        _delay_ms(10);
+
+        if (!(can_message_read(&can_receive)))
+        {
+            printf("%d\n\r", can_receive.data[0]);
+        }
+        */
+
+       //_delay_ms(20);
+       printf("%s\n\r", "Timer start");
+       T0delay();
+       printf("%s\n\r", "Timer end");
     }
     return 0;
+}
+
+void T0delay()
+{
+    TCCR0 = (1 << CS02) | (1 << CS00); /* Timer0, normal mode, /1024 prescalar */
+    TCNT0 = TEN_MS; // no. of cycles in 10ms                /* Load TCNT0, count for 10ms */
+    while ((TIFR & 0x01) == 0)
+        ; /* Wait for TOV0 to roll over */
+    TCCR0 = 0;
+    TIFR = 0x1; /* Clear TOV0 flag */
 }

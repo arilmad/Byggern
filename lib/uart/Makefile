@@ -1,4 +1,4 @@
-SOURCE_FILES := can_driver.c MCP2515.c
+SOURCE_FILES := uart.c
 
 BUILD_DIR := ../../build
 TARGET_CPU := atmega162

@@ -51,7 +51,7 @@ $(SUBDIRS):
 OBJECT_FILES = $(wildcard $(BUILD_DIR)/*.o)
 
 $(BUILD_DIR)/main.hex: $(SUBDIRS) $(OBJECT_FILES) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(BUILD_DIR)/*.o -o $(BUILD_DIR)/a.out
+	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out
 
 	avr-objcopy -j .text -j .data -O ihex $(BUILD_DIR)/a.out $(BUILD_DIR)/main.hex
 

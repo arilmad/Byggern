@@ -7,7 +7,7 @@ ISR(INT1_vect)
 
 void can_init(void)
 {
-    mcp2515_init(MODE_NORMAL);
+    mcp2515_init(MODE_LOOPBACK);
     mcp2515_write(MCP_CANINTE, 0x05); // Enable Transmit and Receive buffer interrupt.
 }
 
