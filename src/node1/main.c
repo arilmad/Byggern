@@ -45,7 +45,7 @@ int main()
     menu_init();
     joystick_init();
 
-    can_init();
+    can_init(MODE_NORMAL);
 
     joystick_dir_t joystick_x_dir, joystick_y_dir;
     joystick_pos_t joystick_current_pos, joystick_new_pos;

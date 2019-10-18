@@ -1,5 +1,5 @@
 #include "spi.h"
-#include "../uart/uart.h"
+
 
 ISR(INT2_vect)
 {
@@ -27,7 +27,7 @@ void spi_init(void)
     PORTB |= (1 << PB4);
     spi_interrupt_init();
 #elif defined(__AVR_ATmega2560__)
-    DDR_SPI |= (1 << DD_MOSI) | (1 << DD_SCK);
+    DDRB |= (1 << PB2) | (1 << PB1) | (1 << PB7) | (1 << PB0);
     SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
 #endif
 }
@@ -37,7 +37,7 @@ void spi_activate_chipselect(void)
 #if defined(__AVR_ATmega162__)
     PORTB &= ~(1 << PB4);
 #elif defined(__AVR_ATmega2560__)
-    PORTB &= ~(1 << PB0);
+    PORTB &= ~(1 << PB7);
 #endif
 }
 
@@ -46,7 +46,7 @@ void spi_deactivate_chipselect(void)
 #if defined(__AVR_ATmega162__)
     PORTB |= (1 << PB4);
 #elif defined(__AVR_ATmega2560__)
-    PORTB |= (1 << PB0);
+    PORTB |= (1 << PB7);
 #endif
 }
 
@@ -58,7 +58,6 @@ void spi_transmit(char data)
     SPDR = data;
     while (!(SPSR & (1 << SPIF)))
         ;
-    printf("%s\n\r", "Spi transmit complete");
 }
 
 //Receives one byte of data at the time.

@@ -5,9 +5,9 @@ ISR(INT1_vect)
     can_interrupt_flag = 1;
 }
 
-void can_init(void)
+void can_init(char mode)
 {
-    mcp2515_init(MODE_NORMAL);
+    mcp2515_init(mode);
     mcp2515_write(MCP_CANINTE, 0x05); // Enable Transmit and Receive buffer interrupt.
 }
 
@@ -22,7 +22,7 @@ uint8_t can_message_read(can_message_t* message)
     {
         return 1; // Nothing to read.
     }
-    message->id = (uint8_t)(mcp2515_read(MCP_RXB0SIDH << 3) | mcp2515_read(MCP_RXB0SIDL >> 5));
+    message->id = (uint8_t)(mcp2515_read(MCP_RXB0SIDH) << 3 | mcp2515_read(MCP_RXB0SIDL) >> 5);
     message->data_length = mcp2515_read(MCP_RXB0DLC);
     for (uint8_t i = 0; i < message->data_length; i++)
     {
