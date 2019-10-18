@@ -17,7 +17,7 @@ BUILD_DIR := build
 TARGET_CPU := atmega162
 TARGET_DEVICE := m162
 
-ifneq (,$(findstring t,$(MAKEFLAGS)))
+ifneq (,$(findstring node2,$(MAKEFLAGS)))
 	SOURCE_DIR := ./src/node2
 	BUILD_DIR := build2
 	TARGET_CPU := atmega2560
