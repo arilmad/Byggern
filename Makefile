@@ -21,7 +21,7 @@ N?=1
 
 ifeq ($(N),2)
 	SOURCE_DIR := ./src/node2
-	BUILD_DIR := build_node1
+	BUILD_DIR := build_node2
 
 	TARGET_CPU := atmega2560
 	TARGET_DEVICE := m2560

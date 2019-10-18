@@ -7,8 +7,6 @@ else
 endif
 
 
-TARGET_CPU := atmega162
-
 CC := avr-gcc
 CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU)
 
