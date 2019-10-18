@@ -2,6 +2,7 @@ SOURCE_DIR := ./src/node1
 ASSETS_DIR := ./assets
 LIB_SPI := ./lib/spi
 LIB_CAN := ./lib/can
+LIB_UART := ./lib/uart
 
 # Set this flag to "yes" (no quotes) to use ISP (SPI); otherwise JTAG is used
 PROGRAM_WITH_JTAG :=no
@@ -28,7 +29,7 @@ endif
 
 export TARGET_CPU TARGET_DEVICE N
 
-LIBRARIES := $(LIB_SPI) $(LIB_CAN)
+LIBRARIES := $(LIB_SPI) $(LIB_CAN) $(LIB_UART)
 
 SUBDIRS := $(SOURCE_DIR) $(ASSETS_DIR) $(LIBRARIES)
 
@@ -53,7 +54,7 @@ $(SUBDIRS):
 OBJECT_FILES = $(wildcard $(BUILD_DIR)/*.o)
 
 $(BUILD_DIR)/main.hex: $(SUBDIRS) $(OBJECT_FILES) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(BUILD_DIR)/*.o -o $(BUILD_DIR)/a.out
+	$(CC) $(CFLAGS) $(OBJECT_FILES) -o $(BUILD_DIR)/a.out
 
 	avr-objcopy -j .text -j .data -O ihex $(BUILD_DIR)/a.out $(BUILD_DIR)/main.hex
 
