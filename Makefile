@@ -2,6 +2,7 @@ SOURCE_DIR := ./src/node1
 ASSETS_DIR := ./assets
 LIB_SPI := ./lib/spi
 LIB_CAN := ./lib/can
+LIB_UART := ./lib/uart
 
 # Set this flag to "yes" (no quotes) to use ISP (SPI); otherwise JTAG is used
 PROGRAM_WITH_JTAG :=no
@@ -25,7 +26,7 @@ ifneq (,$(findstring t,$(MAKEFLAGS)))
 	FFLAGS := -p $(TARGET_DEVICE) -c $(PROGRAMMER) -P /dev/ttyUSB0 -b 115200 -F -U flahs:w:$(BUILD_DIR)/main.hex:i
 endif
 
-LIBRARIES := $(LIB_SPI) $(LIB_CAN)
+LIBRARIES := $(LIB_SPI) $(LIB_CAN) $(LIB_UART)
 
 SUBDIRS := $(SOURCE_DIR) $(ASSETS_DIR) $(LIBRARIES)
 

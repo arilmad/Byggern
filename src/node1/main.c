@@ -12,8 +12,8 @@
 #include <avr/interrupt.h>
 
 #include "../../lib/can/can_driver.h"
-#include "../../assets/bitmaps.h"
 #include "../../lib/uart/uart.h"
+#include "../../assets/bitmaps.h"
 #include "xmem.h"
 #include "joystick.h"
 #include "slider.h"
@@ -32,7 +32,11 @@ int main()
 
     can_init();
 
-    joystick_dir_t dir;
+    joystick_dir_t current_x_dir = NEUTRAL;
+    joystick_dir_t current_y_dir = NEUTRAL;
+
+    joystick_dir_t new_x_dir;
+    joystick_dir_t new_y_dir;
 
     menu_t node;
 
@@ -43,22 +47,18 @@ int main()
     int num_loops = 0;
     uint8_t enter_menu = 1;
 
-    can_message_t message1 = {1, 2, "M1"};
-    can_message_t message2 = {2, 2, "M2"};
-    can_message_t message3 = {3, 2, "M3"};
 
-    can_message_t response;
-
-    char status;
-    //   printf("%s\n\r", message1.data);
     sei();
+
     while (1)
     {
 
         joystick_get_relative_pos();
-        dir = joystick_get_y_dir();
 
-        if (dir != NEUTRAL && num_loops > 5)
+        new_x_dir = joystick_get_x_dir();
+        new_y_dir = joystick_get_y_dir();
+
+        if (new_y_dir != NEUTRAL && num_loops > 5)
         {
             if (enter_menu)
             {
@@ -68,7 +68,7 @@ int main()
             }
             else
             {
-                menu_scroll_highlighted_node(dir);
+                menu_scroll_highlighted_node(new_y_dir);
             }
             num_loops = 0;
         }
@@ -88,29 +88,22 @@ int main()
 
         */
 
+       if (new_x_dir != current_x_dir)
+       {
+           can_message_t can_joystick_x_pos = {1, 3, (char *)(new_x_dir)}; // id 1 for x pos. // Fix declaration?
+           can_message_send(&can_joystick_x_pos);
+           current_x_dir = new_x_dir;
+       }
 
-        can_message_send(&message2);
-        _delay_ms(10);
-        can_message_read(&response);
-        printf("%s\n\r", response.data);
-        _delay_ms(10);
-        can_message_send(&message1);
-        _delay_ms(10);
-
-        can_message_read(&response);
-        printf("%s\n\r", response.data);
-        _delay_ms(10);
-
-        can_message_send(&message3);
-        _delay_ms(10);
-        can_message_read(&response);
-        printf("%s\n\r", response.data);
-        _delay_ms(10);
+       if (new_y_dir != current_y_dir)
+       {
+           can_message_t can_joystick_y_pos = {2, 3, (char *)(new_x_dir)}; // id 2 for y pos
+           can_message_send(&can_joystick_y_pos);
+           current_y_dir = new_y_dir;
+       }
 
         num_loops++;
-        // status = mcp2515_read(MCP_CANSTAT);
          _delay_ms(20);
-        // printf("%x\n\r", status);
     }
     return 0;
 }
