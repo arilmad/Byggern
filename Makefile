@@ -3,10 +3,6 @@ ASSETS_DIR := ./assets
 LIB_SPI := ./lib/spi
 LIB_CAN := ./lib/can
 
-LIBRARIES := $(LIB_SPI) $(LIB_CAN)
-
-SUBDIRS := $(SOURCE_DIR) $(ASSETS_DIR) $(LIBRARIES)
-
 # Set this flag to "yes" (no quotes) to use ISP (SPI); otherwise JTAG is used
 PROGRAM_WITH_JTAG :=no
 
@@ -20,10 +16,22 @@ BUILD_DIR := build
 TARGET_CPU := atmega162
 TARGET_DEVICE := m162
 
+ifneq (,$(findstring t,$(MAKEFLAGS)))
+	SOURCE_DIR := ./src/node2
+	BUILD_DIR := build2
+	TARGET_CPU := atmega2560
+	TARGET_DEVICE := m2560
+	PROGRAMMER := stk500v2
+	FFLAGS := -p $(TARGET_DEVICE) -c $(PROGRAMMER) -P /dev/ttyUSB0 -b 115200 -F -U flahs:w:$(BUILD_DIR)/main.hex:i
+endif
+
+LIBRARIES := $(LIB_SPI) $(LIB_CAN)
+
+SUBDIRS := $(SOURCE_DIR) $(ASSETS_DIR) $(LIBRARIES)
+
 CC := avr-gcc
 CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU)
-
-
+FFLAGS := -p $(TARGET_DEVICE) -c $(PROGRAMMER) -U flash:w:$(BUILD_DIR)/main.hex:i
 
 .DEFAULT_GOAL := $(BUILD_DIR)/main.hex
 
@@ -48,7 +56,7 @@ $(BUILD_DIR)/main.hex: $(SUBDIRS) $(OBJECT_FILES) | $(BUILD_DIR)
 
 
 flash: $(SUBDIRS) $(BUILD_DIR)/main.hex
-	avrdude -p $(TARGET_DEVICE) -c $(PROGRAMMER) -U flash:w:$(BUILD_DIR)/main.hex:i
+	avrdude $(FFLAGS) 
 
 fuse:
 	avrdude -p $(TARGET_DEVICE) -c $(PROGRAMMER) -U efuse:w:0xff:m
