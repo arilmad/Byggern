@@ -23,3 +23,4 @@ slider_pos_t get_relative_slider_pos(void)
 
     return relative_pos;
 }
+

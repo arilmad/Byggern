@@ -1,4 +1,5 @@
 #include "spi.h"
+#include "../uart/uart.h"
 
 ISR(INT2_vect)
 {
@@ -44,6 +45,7 @@ void spi_transmit(char data)
     SPDR = data;
     while (!(SPSR & (1 << SPIF)))
         ;
+    printf("%s\n\r", "Spi transmit complete");
 }
 
 //Receives one byte of data at the time.

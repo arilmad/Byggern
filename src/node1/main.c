@@ -1,9 +1,8 @@
 #define F_CPU 4915200
 
-#define FOSC 4915200 // Clock Speed
 #define BAUD 9600
-#define MYUBRR FOSC / 16 / BAUD - 1
-#define ONE_MS FOSC
+#define MYUBRR F_CPU / 16 / BAUD - 1
+#define ONE_MS F_CPU 
 
 #include <stdint.h>
 #include <avr/io.h>
@@ -67,20 +66,19 @@ int main()
     joystick_current_pos = joystick_get_relative_pos();
 
 
-    init_timer();
+    //init_timer();
     
     while (1)
     {
         
-        /*
+        
         joystick_new_pos = joystick_get_relative_pos();
 
         joystick_x_dir = joystick_get_x_dir();
         joystick_y_dir = joystick_get_y_dir();
 
-        ms_elapsed = (int)(clock() - clock_start)/CLOCKS_PER_SEC/1000;
 
-        if (joystick_y_dir != NEUTRAL && ms_elapsed > 10)
+        if (joystick_y_dir != NEUTRAL)
         {
             if (enter_menu)
             {
@@ -93,7 +91,6 @@ int main()
                 menu_scroll_highlighted_node(joystick_y_dir);
             }
 
-            clock_start = clock();
         }
 
         if (joystick_button_pressed)
@@ -101,9 +98,9 @@ int main()
             menu_change_menu_level();
             joystick_button_pressed = 0;
         }
-        */
-
+        
         /*
+        
             CAN_INTE vil du enable interrupts på 
 
             mottatt melding? Sjekk CAN_INTF register om melding mottatt 
@@ -111,7 +108,7 @@ int main()
             sette CAN_INTF lav igjen
 
         */
-        /*
+        
         if (joystick_new_pos.x != joystick_current_pos.x)
         {
             can_joystick_pos.id = 1;
@@ -124,7 +121,7 @@ int main()
         }
 
         _delay_ms(10);
-        */
+        
         /*
         if (!(can_message_read(&can_receive)))
         {
@@ -133,7 +130,7 @@ int main()
 
         _delay_ms(10);
         */
-        /*
+        
         if (joystick_new_pos.y != joystick_current_pos.y)
         {
             can_joystick_pos.id = 2; // id 2 for y pos
@@ -143,7 +140,7 @@ int main()
             joystick_current_pos.y = joystick_new_pos.y;
             printf("%s\n\r", "Sent new y dir via CAN");
         }
-        */
+        
         /*
         _delay_ms(10);
 
@@ -153,7 +150,7 @@ int main()
         }
         */
 
-       //_delay_ms(20);
+       _delay_ms(20);
 
     }
     return 0;
