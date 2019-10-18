@@ -13,18 +13,23 @@ ifeq ($(PROGRAM_WITH_JTAG),yes)
 	PROGRAMMER := atmelice_isp
 endif
 
-BUILD_DIR := build
+BUILD_DIR := build_node1
 TARGET_CPU := atmega162
 TARGET_DEVICE := m162
 
-ifneq (,$(findstring node2,$(MAKEFLAGS)))
+N?=1
+
+ifeq ($(N),2)
 	SOURCE_DIR := ./src/node2
-	BUILD_DIR := build2
+	BUILD_DIR := build_node2
+
+	ASSETS_DIR :=
+
 	TARGET_CPU := atmega2560
 	TARGET_DEVICE := m2560
-	PROGRAMMER := stk500v2
-	FFLAGS := -p $(TARGET_DEVICE) -c $(PROGRAMMER) -P /dev/ttyUSB0 -b 115200 -F -U flahs:w:$(BUILD_DIR)/main.hex:i
 endif
+
+export TARGET_CPU TARGET_DEVICE N
 
 LIBRARIES := $(LIB_SPI) $(LIB_CAN) $(LIB_UART)
 

@@ -1,7 +1,10 @@
 SOURCE_FILES := uart.c
 
-BUILD_DIR := ../../build
-TARGET_CPU := atmega162
+ifeq ($(N),1)
+	BUILD_DIR := ../../build_node1
+else
+	BUILD_DIR := ../../build_node2
+endif
 
 CC := avr-gcc
 CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU)
