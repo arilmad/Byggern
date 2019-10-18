@@ -1,6 +1,11 @@
 SOURCE_FILES := bitmaps.c fonts.c
 
-BUILD_DIR := ../build
+ifeq ($(N),1)
+	BUILD_DIR := ../build_node1
+else
+	BUILD_DIR := ../build_node2
+endif
+
 TARGET_CPU := atmega162
 
 CC := avr-gcc
