@@ -3,7 +3,7 @@
 #define FOSC 4915200 // Clock Speed
 #define BAUD 9600
 #define MYUBRR FOSC / 16 / BAUD - 1
-#define TEN_MS 0.01 / 1 / FOSC / 1024;
+#define ONE_MS FOSC
 
 #include <stdint.h>
 #include <avr/io.h>
@@ -21,7 +21,20 @@
 #include "oled.h"
 #include "menu.h"
 
-void T0delay();
+ISR(TIMER0_OVF_vect)
+{
+    static uint8_t count = 0; //hold value of count between interrupts
+    count++;
+
+    if ((count % 25) == 0)
+    {
+        printf("%s\n\r", "1s elapsed");
+    }
+    TIFR |= (1 << TOV0);
+
+} //TIMER0_OVF_vect
+
+void init_timer();
 
 int main()
 {
@@ -53,8 +66,9 @@ int main()
 
     joystick_current_pos = joystick_get_relative_pos();
 
-    
 
+    init_timer();
+    
     while (1)
     {
         
@@ -140,19 +154,15 @@ int main()
         */
 
        //_delay_ms(20);
-       printf("%s\n\r", "Timer start");
-       T0delay();
-       printf("%s\n\r", "Timer end");
+
     }
     return 0;
 }
 
-void T0delay()
+void init_timer()
 {
-    TCCR0 = (1 << CS02) | (1 << CS00); /* Timer0, normal mode, /1024 prescalar */
-    TCNT0 = TEN_MS; // no. of cycles in 10ms                /* Load TCNT0, count for 10ms */
-    while ((TIFR & 0x01) == 0)
-        ; /* Wait for TOV0 to roll over */
-    TCCR0 = 0;
-    TIFR = 0x1; /* Clear TOV0 flag */
+    TCCR0 = (1 << CS00) | (1 << CS02); /* Timer0, normal mode, /1024 prescalar */
+    TCNT0 = 10*ONE_MS; // no. of cycles in 10ms                /* Load TCNT0, count for 10ms */
+    TIMSK |= (1 << TOIE0); //allow interrupts on overflow
+    ASSR |= (1 << AS2);
 }
