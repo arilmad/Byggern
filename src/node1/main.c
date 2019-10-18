@@ -2,8 +2,7 @@
 
 #define BAUD 9600
 #define MYUBRR F_CPU / 16 / BAUD - 1
-#define ONE_MS F_CPU 
-
+#define TEN_MS 19200/4
 #include <stdint.h>
 #include <avr/io.h>
 #include <util/delay.h>
@@ -20,24 +19,33 @@
 #include "oled.h"
 #include "menu.h"
 
+/*
 ISR(TIMER0_OVF_vect)
 {
-    static uint8_t count = 0; //hold value of count between interrupts
+    static uint64_t count = 0; //hold value of count between interrupts
     count++;
-
-    if ((count % 25) == 0)
+    static uint8_t toggle = 0;
+    if (!(count % TEN_MS))
     {
-        printf("%s\n\r", "1s elapsed");
+        if (toggle)
+        {
+            PORTE |= (1<<PE0);
+        } else
+        {
+            PORTE &= ~(1<<PE0);
+        }
+        toggle = !toggle;
     }
     TIFR |= (1 << TOV0);
 
 } //TIMER0_OVF_vect
 
 void init_timer();
-
+*/
 int main()
 {
-
+    cli(); 
+    
     UART_init(MYUBRR);
     xmem_init();
     oled_init();
@@ -46,6 +54,8 @@ int main()
     joystick_init();
 
     can_init(MODE_NORMAL);
+
+    DDRE |= (1<<PE0);
 
     joystick_dir_t joystick_x_dir, joystick_y_dir;
     joystick_pos_t joystick_current_pos, joystick_new_pos;
@@ -61,13 +71,12 @@ int main()
 
     uint8_t enter_menu = 1;
 
-    sei();
-
     joystick_current_pos = joystick_get_relative_pos();
 
-
     //init_timer();
-    
+
+    sei();
+
     while (1)
     {
         
@@ -158,8 +167,7 @@ int main()
 
 void init_timer()
 {
-    TCCR0 = (1 << CS00) | (1 << CS02); /* Timer0, normal mode, /1024 prescalar */
-    TCNT0 = 10*ONE_MS; // no. of cycles in 10ms                /* Load TCNT0, count for 10ms */
+    TCCR0 = (1 << CS00) | (1 << COM01); /* Timer0, fast pwm mode, /1024 prescalar */
     TIMSK |= (1 << TOIE0); //allow interrupts on overflow
     ASSR |= (1 << AS2);
 }

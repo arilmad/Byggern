@@ -46,9 +46,7 @@ char mcp2515_status(void)
 {
     char status;
     spi_activate_chipselect();
-    //spi_transmit(MCP_READ_STATUS);
-    spi_transmit(0x0E);
-
+    spi_transmit(MCP_READ_STATUS);
     status = spi_receive();
     spi_deactivate_chipselect();
     return status;
