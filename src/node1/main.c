@@ -11,9 +11,9 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
-#include "../lib/can/can_driver.h"
-#include "../assets/bitmaps.h"
-#include "uart.h"
+#include "../../lib/can/can_driver.h"
+#include "../../assets/bitmaps.h"
+#include "../../lib/uart/uart.h"
 #include "xmem.h"
 #include "joystick.h"
 #include "slider.h"

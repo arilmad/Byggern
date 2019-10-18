@@ -3,13 +3,12 @@
 
 #define ASCII_OFFSET 32
 
-#include "../assets/fonts.h"
+#include "../../assets/fonts.h"
 
 #include <stdint.h>
 #include <avr/pgmspace.h>
 
 #include "xmem.h"
-#include "uart.h"
 
 //TODO: Create an update function that updates the oled to a screen from memory
 

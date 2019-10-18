@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <avr/io.h>
 
-#include "uart.h"
 #include "adc.h"
 
 

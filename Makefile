@@ -1,4 +1,4 @@
-SOURCE_DIR := ./src
+SOURCE_DIR := ./src/node1
 ASSETS_DIR := ./assets
 LIB_SPI := ./lib/spi
 LIB_CAN := ./lib/can
