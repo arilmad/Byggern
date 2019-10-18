@@ -7,18 +7,22 @@ ISR(INT2_vect)
 
 void spi_interrupt_init(void)
 {
+#if defined(__AVR_ATmega162__)
     GICR |= (1 << INT1);
     MCUCR |= (1 << ISC11);
     MCUCR &= ~(1 << ISC10);
+#elif defined(__AVR_ATmega2560__)
+    //Code for spi interrupts here
+#endif
 }
 
 //Initializes the Atmega162 to be a master.
 void spi_init(void)
 {
     DDRB |= (1 << PB5) | (1 << PB7) | (1 << PB4);
-    SPCR |= (1 << SPE) | (1 << MSTR) | (1<<SPR0);
+    SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
     //SPCR &= ~(1 << SPR1) | (1<<SPR0);
-    PORTB |= (1<<PB4);
+    PORTB |= (1 << PB4);
     spi_interrupt_init();
 }
 
@@ -50,4 +54,3 @@ char spi_receive(void)
         ;
     return SPDR;
 }
-
