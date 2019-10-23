@@ -3,6 +3,8 @@
 #include "../../lib/can/can_driver.h"
 #include "../../lib/uart/uart.h"
 
+#include "timer.h"
+
 #define F_CPU 16000000
 
 #define BAUD 9600
@@ -10,14 +12,18 @@
 
 int main()
 {
+    timer_init();
     UART_init( MYUBRR );
     can_init(MODE_NORMAL);
 
+    DDRA = (1<<PA3);
+    DDRB = (1<<PB7);
+    OCR0A = 90;
     can_message_t response;
     int counter = 1000;
 
     printf("%s\r\n", "Print");
-
+    sei();
     while(1)
     {   
 

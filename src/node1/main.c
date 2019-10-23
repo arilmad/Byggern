@@ -165,9 +165,3 @@ int main()
     return 0;
 }
 
-void init_timer()
-{
-    TCCR0 = (1 << CS00) | (1 << COM01); /* Timer0, fast pwm mode, /1024 prescalar */
-    TIMSK |= (1 << TOIE0); //allow interrupts on overflow
-    ASSR |= (1 << AS2);
-}
