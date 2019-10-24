@@ -3,7 +3,7 @@
 #include "../../lib/can/can_driver.h"
 #include "../../lib/uart/uart.h"
 
-#include "timer.h"
+#include "servo.h"
 
 #define F_CPU 16000000
 
@@ -12,25 +12,29 @@
 
 int main()
 {
-    timer_init();
+    cli();
+
     UART_init( MYUBRR );
     can_init(MODE_NORMAL);
+    servo_init();
 
-    DDRA = (1<<PA3);
-    DDRB = (1<<PB7);
-    OCR0A = 90;
     can_message_t response;
     int counter = 1000;
 
-    printf("%s\r\n", "Print");
+
+    printf("%s\r\n", "Welcome stranger");
+    
     sei();
     while(1)
     {   
-
         if (!(can_message_read(&response))) // Returns 0 when successfully read
         {
             printf("id. %d", response.id);
             printf(" DATA: %d\n\r", response.data[0]);
+            if (response.id == 1)
+            {
+                servo_set_pos(response.data[0]);
+            }
         }
 
         while (counter) { counter--; }
