@@ -1,5 +1,5 @@
-#include <stdint.h>
 #include <avr/io.h>
+#include <stdint.h>
 
 #include "pwm.h"
 

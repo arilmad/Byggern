@@ -4,29 +4,32 @@
 #include "../../lib/uart/uart.h"
 
 #include "servo.h"
+#include "game.h"
 
 #define F_CPU 16000000
 
 #define BAUD 9600
 #define MYUBRR F_CPU / 16 / BAUD - 1
 
+
 int main()
 {
     cli();
-
     UART_init( MYUBRR );
     can_init(MODE_NORMAL);
     servo_init();
-
+    game_init();
+    
     can_message_t response;
     int counter = 1000;
-
 
     printf("%s\r\n", "Welcome stranger");
     
     sei();
     while(1)
     {   
+
+        //printf("%d\r\n", TCNT0);
         if (!(can_message_read(&response))) // Returns 0 when successfully read
         {
             printf("id. %d", response.id);
