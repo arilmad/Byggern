@@ -7,7 +7,7 @@
 
 static uint16_t max_encoder_value;
 
-static int r = 2000;
+static int16_t r = 2000;
 
 /*
 static double e2, e1, e0, u2, u1, u0;
@@ -53,38 +53,43 @@ void pid( void )
 }
 */
 
-static float e0 = 0;
-static float integral = 0;
-#define Kp 1
-#define Ki 0
-#define Kd 0
-#define Ts 0.01
+static int16_t e0 = 0;
+static double integral = 0;
+static double last_u = 0;
+
+#define Kp 0.08
+#define Ki 0.15
+#define Kd 0.002
+#define Ts 0.0025
+
+
 
 void pid()
 {
-    float e = (float)(r - encoder_read());
+    int16_t pos = encoder_read();
+    int16_t e = (pos - r);
     integral += e*Ts;
-    float d = (e - e0)/Ts;
-    float u = Kp*e + Ki*integral + Kd*d;
-    if ( u < -256 )
+    double d = (e - e0)/Ts;
+    double u = Kp*e + Ki*integral + Kd*d;
+
+    if ( u < -255 ) { u = -255; } 
+    else if ( u > 255 ) { u = 255; }
+
+    if (u != last_u)
     {
-        motor_drive(-256);
-    } 
-    else if ( u > 256 )
-    {
-        motor_drive(256);
+        motor_drive( (int16_t) u );
+        last_u = u;
     }
 
-    else
-    {
-        motor_drive(u);
-    }
     e0 = e;
+
+    //printf("(pid) e = %7d\r",  (int) e);
 }
 
 void motor_set_ref(int ref)
 {
-    r = ref;
+    ref = abs( ref - 100 );
+    r = (int16_t)((double)(ref/100.0) * max_encoder_value);
 }
 
 void motor_init( void )
@@ -123,54 +128,46 @@ void motor_stop( void )
 
 void motor_calibrate()
 {   
+    uint16_t counter = 10000;
     int16_t pos = encoder_read(); 
     motor_drive(100);
-    uint16_t counter = 1000;
 
-    while ( 1 )
-    {
-        if ( !counter )
-        {
-            if ( pos == encoder_read())
-            {
-                break;
-            } else 
-            {
-                pos = encoder_read();
-                counter = 1000;
-            }
-        }
-        counter --;
-        encoder_read();
+    while ( 1 ) 
+    { 
+        while ( counter ) { counter --; }
+        if ( pos == encoder_read() ) { break; }
+        counter = 10000;
+        pos = encoder_read();
     }
-
+    
     motor_stop();   
     encoder_reset();
-    
     motor_drive(-100);
 
-    counter = 1000;
+    counter = 10000;
 
     while ( 1 )
     {
-        if ( !counter )
-        {
-            if ( pos == encoder_read())
-            {
-                break;
-            } else 
-            {
-                pos = encoder_read();
-                counter = 1000;
-            }
-        }
-        counter --;
-        encoder_read();
+        while ( counter ) { counter --; }
+        if ( pos == encoder_read() ) { break; }
+        counter = 10000;
+        pos = encoder_read();
     }
 
-    max_encoder_value = encoder_read();
+
+    max_encoder_value = pos;
+
     motor_drive(100);
-    while (encoder_read() > max_encoder_value/2);
+    counter = 10000;
+
+    while (encoder_read() > max_encoder_value/2)
+    {
+        while ( counter ) { counter --; }
+        counter = 10000;
+    }
+
     motor_stop();
     pos = encoder_read();
+    r = max_encoder_value/2;
+    printf("%d\n\r", pos);
 }

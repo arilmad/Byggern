@@ -57,10 +57,13 @@ int main()
 
     DDRE |= (1<<PE0);
 
-    joystick_dir_t joystick_x_dir, joystick_y_dir;
-    joystick_pos_t joystick_current_pos, joystick_new_pos;
+    DDRB &= (~(1<<PB2));
 
-    can_message_t can_joystick_pos = {NULL, 8, NULL};
+    joystick_dir_t joystick_y_dir;
+    slider_pos_t slider_current_pos, slider_new_pos;
+
+    can_message_t can_slider_pos = {NULL, 8, NULL};
+    can_message_t can_button_pressed = {NULL, 8, NULL};
 
     can_message_t can_receive;
 
@@ -71,7 +74,7 @@ int main()
 
     uint8_t enter_menu = 1;
 
-    joystick_current_pos = joystick_get_relative_pos();
+    slider_current_pos = slider_get_relative_pos();
 
     //init_timer();
 
@@ -80,11 +83,11 @@ int main()
     while (1)
     {
         
-        
-        joystick_new_pos = joystick_get_relative_pos();
+        joystick_get_relative_pos();
+        slider_new_pos = slider_get_relative_pos();
 
-        joystick_x_dir = joystick_get_x_dir();
         joystick_y_dir = joystick_get_y_dir();
+
 
 
         if (joystick_y_dir != NEUTRAL)
@@ -108,56 +111,35 @@ int main()
             joystick_button_pressed = 0;
         }
         
-        /*
-        
-            CAN_INTE vil du enable interrupts på 
 
-            mottatt melding? Sjekk CAN_INTF register om melding mottatt 
-                les melding få data
-            sette CAN_INTF lav igjen
-
-        */
         
-        if (joystick_new_pos.x != joystick_current_pos.x)
+        if (abs(slider_new_pos.left_pos - slider_current_pos.left_pos) > 3)
         {
-            can_joystick_pos.id = 1;
-            can_joystick_pos.data[0] = (0xFF & joystick_new_pos.x);
+            can_slider_pos.id = 1;
+            can_slider_pos.data[0] = (0xFF & slider_new_pos.left_pos);
 
-            can_message_send(&can_joystick_pos);
+            can_message_send(&can_slider_pos);
 
-            joystick_current_pos.x = joystick_new_pos.x;
-            printf("%s\n\r", "Sent new x dir via CAN");
+            slider_current_pos.left_pos = slider_new_pos.left_pos;
+        }
+        if (PINB & (1 << PB2)) {
+            can_button_pressed.id = 3;
+            can_button_pressed.data[0] = 0xFF & 1;
+            can_message_send(&can_button_pressed);
         }
 
         _delay_ms(10);
-        
-        /*
-        if (!(can_message_read(&can_receive)))
-        {
-            printf("%d\n\r", can_receive.data[0]);
-        }
 
-        _delay_ms(10);
-        */
         
-        if (joystick_new_pos.y != joystick_current_pos.y)
+        if (abs(slider_new_pos.right_pos - slider_current_pos.right_pos) > 3)
         {
-            can_joystick_pos.id = 2; // id 2 for y pos
-            can_joystick_pos.data[0] = (0xFF & joystick_new_pos.y);
+            can_slider_pos.id = 2; // id 2 for y pos
+            can_slider_pos.data[0] = (0xFF & slider_new_pos.right_pos);
 
-            can_message_send(&can_joystick_pos);
-            joystick_current_pos.y = joystick_new_pos.y;
-            printf("%s\n\r", "Sent new y dir via CAN");
+            can_message_send(&can_slider_pos);
+            slider_current_pos.right_pos = slider_new_pos.right_pos;
         }
         
-        /*
-        _delay_ms(10);
-
-        if (!(can_message_read(&can_receive)))
-        {
-            printf("%d\n\r", can_receive.data[0]);
-        }
-        */
 
        _delay_ms(20);
 
