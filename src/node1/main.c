@@ -122,15 +122,6 @@ int main()
 
             slider_current_pos.left_pos = slider_new_pos.left_pos;
         }
-        if (PINB & (1 << PB2)) {
-            can_button_pressed.id = 3;
-            can_button_pressed.data[0] = 0xFF & 1;
-            can_message_send(&can_button_pressed);
-        }
-
-        _delay_ms(10);
-
-        
         if (abs(slider_new_pos.right_pos - slider_current_pos.right_pos) > 3)
         {
             can_slider_pos.id = 2; // id 2 for y pos
@@ -138,6 +129,11 @@ int main()
 
             can_message_send(&can_slider_pos);
             slider_current_pos.right_pos = slider_new_pos.right_pos;
+        }
+        if (PINB & (1 << PB2)) {
+            can_button_pressed.id = 3;
+            can_button_pressed.data[0] = 0xFF & 1;
+            can_message_send(&can_button_pressed);
         }
         
 

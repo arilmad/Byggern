@@ -98,9 +98,11 @@ joystick_dir_t joystick_get_y_dir(){
     return y_dir;
 }
 
+/*
 int joystick_button_poll() {
     if (~(PINB) & 1 << PINB2){
         return 1;
     }
     return 0;
 }
+*/

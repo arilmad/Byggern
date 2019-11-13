@@ -1,5 +1,5 @@
 #include "game.h"
-
+#include "../../lib/uart/uart.h"
 #define IR_threshold 30
 
 static uint8_t score;
