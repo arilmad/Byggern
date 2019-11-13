@@ -6,7 +6,6 @@ menu_t HighlightedNode;
 menu_t Back;
 
 
-
 menu_t menu_create_menu_node(char* name)
 {
 	menu_t temp = (menu_t)malloc(sizeof(struct Menu));
@@ -22,29 +21,66 @@ void menu_init()
 {	
 	MainMenu = menu_create_menu_node("Main Menu");
 	Back = menu_create_menu_node("Back");
-
+/*
 	menu_t Highscores = menu_create_menu_node("Highscores");
-	menu_t PlayManual = menu_create_menu_node("Play Manual Game");
+	menu_t PlayGame = menu_create_menu_node("Play Game");
+
+	PlayManual = menu_create_menu_node("Play Manual Game");
 	menu_t PlayAuto = menu_create_menu_node("Play Autonomously");
 
 	menu_t AllTimeHigh = menu_create_menu_node("All Time Highs");
 
 
-	MainMenu->child = Highscores;
+	MainMenu->child = PlayGame;
 
 	Highscores->parent = MainMenu;
 	Highscores->child = AllTimeHigh;
-	Highscores->sibling = PlayManual;
 
-	PlayManual->parent = MainMenu;
+	PlayGame->parent = MainMenu;
+	PlayGame->child = PlayManual;
+	PlayGame->sibling = Highscores;
+
+	PlayManual->parent = PlayGame;
 	PlayManual->sibling = PlayAuto;
 	
-	PlayAuto->parent = MainMenu;
+	PlayAuto->parent = PlayGame;
+	PlayAuto->sibling = Back;
 	
 	AllTimeHigh->parent = Highscores;
 	AllTimeHigh->sibling = Back;
+	HighlightedNode = PlayGame;
+	*/
+	
+}
 
-	HighlightedNode = Highscores;
+menu_t menu_get_main_menu() {
+	return MainMenu;
+}
+
+void menu_init_highlighted_node()
+{
+	HighlightedNode = MainMenu->child;
+}
+
+void menu_generate_children(menu_t parent, char* arr[], uint8_t number_of_children)
+{
+	menu_t temp = menu_create_menu_node(arr[0]);
+	parent->child = temp;
+	temp->parent = parent;
+
+	for (size_t i = 1; i < number_of_children ; i++)
+	{
+		menu_t sibling = menu_create_menu_node(arr[i]);
+		sibling->parent = parent;
+
+		temp->sibling = sibling;
+		temp = sibling;	
+	}
+	if (parent != MainMenu)
+	{
+		temp->sibling = Back;
+	}
+	
 }
 
 void menu_scroll_highlighted_node(joystick_dir_t direction){
@@ -83,15 +119,20 @@ void menu_scroll_highlighted_node(joystick_dir_t direction){
 
 void menu_change_menu_level()
 {
-	if(HighlightedNode == Back){
+	if (HighlightedNode == Back)
+	{
 		HighlightedNode = HighlightedNode->parent;
+
 	} else if (HighlightedNode->child != NULL)
 	{
 		Back->parent = HighlightedNode;
 		HighlightedNode = HighlightedNode->child;
-	}
+
+	} 
 	oled_reset();
 	menu_print_menu();
+	
+
 }
 
 

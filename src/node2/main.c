@@ -49,7 +49,7 @@ int main()
     sei();
     uint16_t max_encoder_value = motor_calibrate();
 
-    pid_init(4, 1 ,1);
+    pid_init(35, 1 ,5);
     int16_t ref = max_encoder_value / 2;
 
 
@@ -57,7 +57,6 @@ int main()
     {
         if (!(can_message_read(&response))) // Returns 0 when successfully read
         {
-            //printf(" DATA: %d\n\r", response.data[0]);
             if (response.id == 1)
             {
                 servo_set_pos(response.data[0]);

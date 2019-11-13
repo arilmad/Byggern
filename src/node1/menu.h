@@ -7,6 +7,10 @@
 #include "oled.h"
 #include "joystick.h"
 
+#include "../../lib/uart/uart.h"
+
+typedef void (*Operation)(void);
+
 typedef struct Menu *menu_t;
 
 struct Menu {
@@ -15,6 +19,10 @@ struct Menu {
 	struct Menu* child;
 	struct Menu* sibling;
 };
+
+menu_t menu_get_main_menu(void);
+void menu_generate_children(menu_t parent, char* arr[], uint8_t number_of_children);
+void menu_init_highlighted_node(void);
 
 void menu_scroll_highlighted_node(joystick_dir_t direction);
 void menu_change_menu_level(void);

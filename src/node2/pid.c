@@ -2,7 +2,7 @@
 
 #include "../../lib/uart/uart.h"
 
-#define SCALING_FACTOR 128
+#define SCALING_FACTOR 1024
 
 #define U_MAX 255
 #define U_MIN -255
@@ -54,8 +54,11 @@ int16_t pid_update( int16_t ref, int16_t pos )
         i_term = -MAX_I_TERM;
     } else
     {
+        sum_error = temp;
         i_term = Ki * sum_error;
     }
+    printf("%d \r\n", i_term);
+
     
     
     

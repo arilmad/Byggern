@@ -42,6 +42,32 @@ ISR(TIMER0_OVF_vect)
 
 void init_timer();
 */
+char* main_menu_nodes[] = {
+    "Play Game",
+    "Highscores"
+};
+
+char* play_game_nodes[] = {
+    "Play Manual",
+    "Play Auto",
+    "Play Voice"
+};
+
+char* highscore_nodes[] = {
+    "All time high"
+};
+
+
+void generate_menu(){
+    menu_t MainMenu = menu_get_main_menu();
+    menu_generate_children(MainMenu, main_menu_nodes, 2);
+    menu_t PlayGame = MainMenu->child;
+    menu_t Highscore = PlayGame->sibling;
+    menu_generate_children(PlayGame, play_game_nodes, 3);
+    menu_generate_children(Highscore, highscore_nodes, 1);
+    //printf("%s\r\n", PlayGame->name);
+}
+
 int main()
 {
     cli(); 
@@ -51,6 +77,8 @@ int main()
     oled_init();
     _delay_ms(40);
     menu_init();
+    generate_menu();
+    menu_init_highlighted_node();
     joystick_init();
 
     can_init(MODE_NORMAL);
@@ -67,10 +95,11 @@ int main()
 
     can_message_t can_receive;
 
-    const unsigned char *picture = harald;
-    oled_print_bitmap(harald);
+    //const unsigned char *picture = harald;
+    //oled_print_bitmap(harald);
 
-    oled_print_welcome_message();
+    //oled_print_welcome_message();
+    menu_print_menu();
 
     uint8_t enter_menu = 1;
 
@@ -87,7 +116,6 @@ int main()
         slider_new_pos = slider_get_relative_pos();
 
         joystick_y_dir = joystick_get_y_dir();
-
 
 
         if (joystick_y_dir != NEUTRAL)
