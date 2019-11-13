@@ -12,7 +12,7 @@ volatile int can_interrupt_flag;
 
 typedef struct can_message
 {
-    uint8_t id;
+    int8_t id;
     uint8_t data_length;
     char data[8];
 } can_message_t;

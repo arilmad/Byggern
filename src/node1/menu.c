@@ -21,36 +21,6 @@ void menu_init()
 {	
 	MainMenu = menu_create_menu_node("Main Menu");
 	Back = menu_create_menu_node("Back");
-/*
-	menu_t Highscores = menu_create_menu_node("Highscores");
-	menu_t PlayGame = menu_create_menu_node("Play Game");
-
-	PlayManual = menu_create_menu_node("Play Manual Game");
-	menu_t PlayAuto = menu_create_menu_node("Play Autonomously");
-
-	menu_t AllTimeHigh = menu_create_menu_node("All Time Highs");
-
-
-	MainMenu->child = PlayGame;
-
-	Highscores->parent = MainMenu;
-	Highscores->child = AllTimeHigh;
-
-	PlayGame->parent = MainMenu;
-	PlayGame->child = PlayManual;
-	PlayGame->sibling = Highscores;
-
-	PlayManual->parent = PlayGame;
-	PlayManual->sibling = PlayAuto;
-	
-	PlayAuto->parent = PlayGame;
-	PlayAuto->sibling = Back;
-	
-	AllTimeHigh->parent = Highscores;
-	AllTimeHigh->sibling = Back;
-	HighlightedNode = PlayGame;
-	*/
-	
 }
 
 menu_t menu_get_main_menu() {
@@ -74,6 +44,7 @@ void menu_generate_children(menu_t parent, char* arr[], uint8_t number_of_childr
 		sibling->parent = parent;
 
 		temp->sibling = sibling;
+
 		temp = sibling;	
 	}
 	if (parent != MainMenu)
@@ -117,7 +88,7 @@ void menu_scroll_highlighted_node(joystick_dir_t direction){
 	menu_print_menu();
 }
 
-void menu_change_menu_level()
+int8_t menu_change_menu_level()
 {
 	if (HighlightedNode == Back)
 	{
@@ -128,11 +99,15 @@ void menu_change_menu_level()
 		Back->parent = HighlightedNode;
 		HighlightedNode = HighlightedNode->child;
 
-	} 
+	} else { return 0; }
 	oled_reset();
 	menu_print_menu();
-	
+	return 1;
+}
 
+char* menu_get_highlighted_node_name()
+{
+	return HighlightedNode->name;
 }
 
 

@@ -21,12 +21,13 @@ struct Menu {
 };
 
 menu_t menu_get_main_menu(void);
+
 void menu_generate_children(menu_t parent, char* arr[], uint8_t number_of_children);
 void menu_init_highlighted_node(void);
 
 void menu_scroll_highlighted_node(joystick_dir_t direction);
-void menu_change_menu_level(void);
-
+int8_t menu_change_menu_level(void);
+char* menu_get_highlighted_node_name();
 void menu_print_menu(void);
 void menu_init(void);
 

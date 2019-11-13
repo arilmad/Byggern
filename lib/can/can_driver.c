@@ -20,22 +20,24 @@ uint8_t can_message_read(can_message_t* message)
 {
     if (!(mcp2515_read(MCP_CANINTF) & 0x01))
     {
-        return 1; // Nothing to read.
+        return 0; // Nothing to read.
     }
-    message->id = (uint8_t)(mcp2515_read(MCP_RXB0SIDH) << 3 | mcp2515_read(MCP_RXB0SIDL) >> 5);
+    int8_t temp = ( mcp2515_read(MCP_RXB0SIDH) );
+
+    message->id = (uint8_t)temp;
     message->data_length = mcp2515_read(MCP_RXB0DLC);
     for (uint8_t i = 0; i < message->data_length; i++)
     {
         message->data[i] = mcp2515_read(MCP_RXB0D0 + i);
     }
     mcp2515_modify(MCP_CANINTF, 0x01, 0x00);
-    return 0;
+    return 1;
 }
 
 void can_message_send(can_message_t* message)
 {
-    mcp2515_write(MCP_TXB0SIDH, message->id >> 3);
-    mcp2515_write(MCP_TXB0SIDL, message->id << 5);
+    mcp2515_write(MCP_TXB0SIDH, message->id);
+    mcp2515_write(MCP_TXB0SIDL, 0x00);
 
     mcp2515_write(MCP_TXB0DLC, 0x0F & message->data_length);
 

@@ -57,11 +57,7 @@ int16_t pid_update( int16_t ref, int16_t pos )
         sum_error = temp;
         i_term = Ki * sum_error;
     }
-    printf("%d \r\n", i_term);
 
-    
-    
-    
     
     d_term = (error - e0) * Kd;
     int16_t u = (p_term + i_term + d_term);
