@@ -19,6 +19,7 @@
 volatile uint8_t pid_flag = 0;
 volatile uint8_t score_flag = 0;
 volatile uint8_t solenoid_flag = 0;
+volatile uint8_t start_score = 0;
 
 
 ISR(TIMER1_OVF_vect)
@@ -73,7 +74,7 @@ int main()
     UART_init( MYUBRR );
     can_init( MODE_NORMAL );
     servo_init();
-    game_init();
+    ir_init();
     motor_init();
     encoder_init();
     solenoid_init();
@@ -81,22 +82,26 @@ int main()
     can_message_t message_send = {0, 8, 0};
     can_message_t response;
     int16_t encoder_value;
+    uint16_t max_encoder_value;
+    int16_t ref;
+    int8_t active_game = 0;
+    pid_init(35, 1, 6);
 
     sei();
-    uint16_t max_encoder_value = motor_calibrate();
-// 35, 1, 5
-    pid_init(35, 1, 6);
-    int16_t ref = 0;
-    int8_t active_game = 0;
+
     while(1)
     {
         if ((can_message_read(&response))) // Returns 0 when successfully read
         {
-            if (response.id == 4) { 
+            if (response.id == 4) {
                 active_game = 1;
+                servo_set_pos(50);
+                ir_reset_game_over_flag();
+                max_encoder_value = motor_calibrate();
+                ref = 0;
             }
             //printf("%d\r\n", response.id);
-            if (active_game){  
+            else if (active_game){  
                 if (response.id == 1)
                 {
                     servo_set_pos(response.data[0]);
@@ -112,6 +117,8 @@ int main()
                     {
                         solenoid_trigger();
                         solenoid_flag = 0;
+                        start_score = 1;
+                        ir_reset_game_over_flag();
                     }
                 }
 
@@ -130,21 +137,24 @@ int main()
             pid_flag = 0;
         }
 
-        if (score_flag)
+        if (score_flag && start_score)
         {
+            score_flag = 0;
             message_send.id = 0;
             can_message_send(&message_send);
-            score_flag = 0;
         }
-        /*
-        if (game_over_flag)
+        
+        if (ir_get_game_over_flag() && start_score)
         {
+            printf("Run if\r\n");
+            active_game = 0;
+            start_score = 0;
+            
             message_send.id = 1;
             can_message_send(&message_send);
-            active_game = 0;
-        }*/
+        }
 
-        _delay_ms(10);
+        _delay_ms(20);
 
     }
     return 0;

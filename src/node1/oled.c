@@ -4,6 +4,19 @@
 #include <util/delay.h>
 
 
+uint8_t oled_centered_msg_start_column( char* msg, uint8_t char_width )
+{
+    uint8_t length = 0;
+    while(msg[length] != '\0') { length++; }
+    return ( (128 - length*char_width) / 2 );
+}
+
+void oled_print_centered_message( char* msg, uint8_t char_width, uint8_t row, uint8_t inverted )
+{
+    uint8_t col = oled_centered_msg_start_column( msg, char_width );
+    oled_pos(row, col);
+    oled_printf(msg, char_width, inverted);
+}
 
 void oled_write_command(uint8_t command)
 {
@@ -138,4 +151,17 @@ void oled_print_welcome_message(void)
     oled_printf("to enter", 5, 0);
     oled_pos(4, 0);
     oled_printf("Main Menu", 5, 0);
+}
+
+
+void oled_print_final_score ( char* score )
+{
+    oled_print_centered_message("Final score:", 8, 1, 0);
+    for ( uint8_t blink = 0; blink < 4; blink++)
+    {
+        oled_clear_line(4);
+        _delay_ms(500);
+        oled_print_centered_message(score, 8, 4, 0);
+        _delay_ms(500);
+    }
 }

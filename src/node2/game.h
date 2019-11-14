@@ -4,9 +4,8 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-static uint8_t game_over_flag = 0;
-
-void game_score_keeper(uint8_t IR_state);
-void game_init();
+void ir_init();
+uint8_t ir_get_game_over_flag();
+void ir_reset_game_over_flag();
 
 #endif

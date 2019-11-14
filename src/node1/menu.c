@@ -1,6 +1,7 @@
 #include "menu.h"
 #include <stdlib.h>
 #include <string.h>
+
 menu_t MainMenu;
 menu_t HighlightedNode;
 menu_t Back;

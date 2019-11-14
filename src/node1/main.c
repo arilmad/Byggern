@@ -54,7 +54,11 @@ char* play_game_nodes[] = {
 };
 
 char* highscore_nodes[] = {
-    "All time high"
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"     
 };
 
 
@@ -64,9 +68,36 @@ void generate_menu(){
     menu_t PlayGame = MainMenu->child;
     menu_generate_children(PlayGame, play_game_nodes, 3);
     menu_t Highscore = PlayGame->sibling;
-    menu_generate_children(Highscore, highscore_nodes, 1);
+    menu_generate_children(Highscore, highscore_nodes, 5);
     //printf("%s\r\n", PlayGame->name);
 }
+
+void update_highscores( char* score )
+{
+    char* tp1;
+    char* tp2;
+
+    
+    for ( uint8_t i = 0; i < 5; i++ )
+    {
+        if ( atoi(score) > atoi(highscore_nodes[i]) )
+        {
+            tp1 = highscore_nodes[i];
+            highscore_nodes[i] = score;
+
+            for ( uint8_t j = i+1; j < 5; j++ )
+            {
+                tp2 = highscore_nodes[j];
+                highscore_nodes[j] = tp1;
+                tp1 = tp2;
+            }
+            break;
+        }
+    }
+
+    generate_menu();
+}
+
 
 int main()
 {
@@ -96,6 +127,7 @@ int main()
 
     char* menu_select;
 
+
     const unsigned char *picture = harald;
     oled_print_bitmap(harald);
 
@@ -108,6 +140,7 @@ int main()
     //init_timer();
     uint8_t active_game = 0;
     uint16_t score = 0;
+    char tp[10];
     sei();
 
     while (1)
@@ -144,11 +177,10 @@ int main()
                         can_msg_send.id = 4;
                         can_message_send(&can_msg_send);
                         active_game = 1;
+                        
                         oled_reset();
-                        oled_pos(1,32);
-                        oled_printf("Game on!", 8, 0);
-                        oled_pos(2,12);
-                        oled_printf("Current score", 8 ,0);
+                        oled_print_centered_message("Game on!", 8, 1, 0);
+                        oled_print_centered_message("Current score", 8, 2, 0);
                         
                     } else if (menu_select == play_game_nodes[1])
                     {
@@ -166,15 +198,20 @@ int main()
                 if ( can_msg_receive.id == 0 )
                 {
                     score ++;
-                    char tp[10];
                     sprintf(tp, "%d", score);
-                    oled_pos(4,52);
-                    oled_printf(tp,8,0);
+                    oled_print_centered_message(tp, 8, 4, 0);
+                    
                 } else if ( can_msg_receive.id == 1 )
                 {
                     active_game = 0;
+                    
                     oled_reset();
+                    update_highscores( tp );
+                    oled_print_final_score( tp );
+                    oled_reset();
+
                     menu_print_menu();
+                    score = 0;
                 }
             }
         }

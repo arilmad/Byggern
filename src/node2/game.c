@@ -2,27 +2,27 @@
 #include "../../lib/uart/uart.h"
 #define IR_threshold 30
 
-volatile static uint16_t counter = 0; 
+volatile uint8_t game_over_flag = 0;
 
-
-void game_score_keeper(uint8_t IR_state)
+void ir_under_threshold(uint8_t IR_state)
 {
-    //printf("Hei\r\n");
-    //printf("%d\r\n", IR_state);
-    if (!(IR_state < IR_threshold))
-    {
-        counter = 200;
-    }
-
-    else if ((IR_state < IR_threshold) && !counter) 
+    if (IR_state < IR_threshold) 
     {
         game_over_flag = 1;
     }
- 
-    if(counter){counter--;}
 }
 
-void game_init()
+void ir_init()
+{   
+    adc_init(ir_under_threshold);
+}
+
+uint8_t ir_get_game_over_flag()
 {
-    adc_init(game_score_keeper);
+    return game_over_flag;
+}
+
+void ir_reset_game_over_flag()
+{
+    game_over_flag = 0;
 }
