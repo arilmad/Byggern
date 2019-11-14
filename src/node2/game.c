@@ -7,8 +7,8 @@ volatile static uint16_t counter = 0;
 
 void game_score_keeper(uint8_t IR_state)
 {
-    printf("Hei\r\n");
-    printf("%d\r\n", IR_state);
+    //printf("Hei\r\n");
+    //printf("%d\r\n", IR_state);
     if (!(IR_state < IR_threshold))
     {
         counter = 200;

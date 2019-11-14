@@ -67,6 +67,11 @@ int16_t pid_update( int16_t ref, int16_t pos )
     if ( u < U_MIN ) { u = U_MIN; } 
     else if ( u > U_MAX ) { u = U_MAX; }
 
-    //printf("%d\r\n", u);
+   // printf("%d\r\n", sum_error);
     return u;
+}
+
+void pid_reset_integrator()
+{
+    sum_error = 0;
 }

@@ -145,9 +145,9 @@ int main()
                         can_message_send(&can_msg_send);
                         active_game = 1;
                         oled_reset();
-                        oled_pos(1,35);
+                        oled_pos(1,32);
                         oled_printf("Game on!", 8, 0);
-                        oled_pos(2,0);
+                        oled_pos(2,12);
                         oled_printf("Current score", 8 ,0);
                         
                     } else if (menu_select == play_game_nodes[1])
@@ -168,8 +168,8 @@ int main()
                     score ++;
                     char tp[10];
                     sprintf(tp, "%d", score);
-                    oled_pos(3,0);
-                    oled_printf(tp,5,0);
+                    oled_pos(4,52);
+                    oled_printf(tp,8,0);
                 } else if ( can_msg_receive.id == 1 )
                 {
                     active_game = 0;

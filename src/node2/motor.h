@@ -3,9 +3,7 @@
 
 #include <avr/io.h>
 
-#include "encoder.h"
 #include "twi_master.h"
-#include "../../lib/uart/uart.h"
 
 typedef enum
 {

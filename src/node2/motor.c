@@ -79,9 +79,10 @@ uint16_t motor_calibrate()
     }
 
     motor_stop();
+    encoder_reset();
     pos = encoder_read();
 
     printf("%d\n\r", pos);
 
-    return max_encoder_value;
+    return max_encoder_value/2;
 }
