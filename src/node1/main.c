@@ -3,7 +3,10 @@
 #define BAUD 9600
 #define MYUBRR F_CPU / 16 / BAUD - 1
 #define TEN_MS 19200 / 4
+#define MAX_NUMBER_OF_HIGHSCORES 5
+
 #include <stdint.h>
+#include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -48,28 +51,21 @@ char *main_menu_nodes[] = {
 
 char *play_game_nodes[] = {
     "Play Manual",
-    "Play Auto",
     "Play Voice"};
 
-menu_t Highscore;
-char *highscore_nodes[] = {
-    "0",
-    "0",
-    "0",
-    "0",
-    "0"};
+char *highscore_nodes[] = {};
 
 void generate_menu()
 {
     menu_t MainMenu = menu_get_main_menu();
     menu_generate_children(MainMenu, main_menu_nodes, 2);
     menu_t PlayGame = MainMenu->child;
-    menu_generate_children(PlayGame, play_game_nodes, 3);
-    Highscore = PlayGame->sibling;
-    menu_generate_children(Highscore, highscore_nodes, 5);
+    menu_generate_children(PlayGame, play_game_nodes, 2);
+    menu_t Highscore = PlayGame->sibling;
+    //menu_generate_children(Highscore, highscore_nodes, 0);
     //printf("%s\r\n", PlayGame->name);
 }
-
+/*
 void update_highscores(char *score)
 {
     char *tp1;
@@ -94,7 +90,7 @@ void update_highscores(char *score)
 
     generate_menu();
 }
-
+*/
 int main()
 {
     cli();
@@ -197,12 +193,17 @@ int main()
                 else if (can_msg_receive.id == 1)
                 {
                     active_game = 0;
-
+                    
                     oled_reset();
-                    update_highscores(tp);
+                    if (menu_update_highscores(strcpy((char *)malloc(strlen(tp) + 1) , tp), main_menu_nodes[1], MAX_NUMBER_OF_HIGHSCORES))
+                    {
+                        oled_print_centered_message("NEW HIGHSCORE", 8, 7, 0);
+                    }
+                    
                     oled_print_final_score(tp);
                     oled_reset();
-
+                    
+                    menu_init_highlighted_node();
                     menu_print_menu();
                     score = 0;
                 }

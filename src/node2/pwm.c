@@ -3,8 +3,8 @@
 void pwm_init(uint16_t duty_cycle) // Duty cycle relative position
 {
     TCCR1A = (1 << WGM11) | (1 << COM1A1);
-    TCCR1B = (1 << WGM13) | (1 << WGM12)  | (1 << CS11); /*8 prescaler */
-    ICR1 = 40000; // TOP = 20ms * F_CPU / Prescaler = 40000
+    TCCR1B = (1 << WGM13) | (1 << WGM12) | (1 << CS11); /*8 prescaler */
+    ICR1 = 40000;                                       // TOP = 20ms * F_CPU / Prescaler = 40000
 
     pwm_set_duty_cycle(duty_cycle);
 
