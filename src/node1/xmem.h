@@ -1,5 +1,5 @@
-#ifndef _XMEM_H_
-#define _XMEM_H_
+#ifndef __XMEM_H__
+#define __XMEM_H__
 
 #include <stdint.h>
 #include <avr/io.h>

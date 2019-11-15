@@ -1,8 +1,11 @@
 #define F_CPU 4915200
 
 #define BAUD 9600
+#define BT_BAUD 9600
+
 #define MYUBRR F_CPU / 16 / BAUD - 1
-#define TEN_MS 19200 / 4
+#define BT_MYUBRR F_CPU / 16 / BT_BAUD - 1
+
 #define MAX_NUMBER_OF_HIGHSCORES 5
 
 #include <stdint.h>
@@ -21,6 +24,7 @@
 #include "slider.h"
 #include "oled.h"
 #include "menu.h"
+#include "bluetooth.h"
 
 /*
 ISR(TIMER0_OVF_vect)
@@ -65,37 +69,13 @@ void generate_menu()
     //menu_generate_children(Highscore, highscore_nodes, 0);
     //printf("%s\r\n", PlayGame->name);
 }
-/*
-void update_highscores(char *score)
-{
-    char *tp1;
-    char *tp2;
 
-    for (uint8_t i = 0; i < 5; i++)
-    {
-        if (atoi(score) > atoi(highscore_nodes[i]))
-        {
-            tp1 = highscore_nodes[i];
-            highscore_nodes[i] = score;
-
-            for (uint8_t j = i + 1; j < 5; j++)
-            {
-                tp2 = highscore_nodes[j];
-                highscore_nodes[j] = tp1;
-                tp1 = tp2;
-            }
-            break;
-        }
-    }
-
-    generate_menu();
-}
-*/
 int main()
 {
     cli();
 
     UART_init(MYUBRR);
+    bluetooth_init(BT_MYUBRR);
     xmem_init();
     oled_init();
     _delay_ms(40);
@@ -108,7 +88,7 @@ int main()
 
     DDRE |= (1 << PE0);
 
-    DDRB &= (~(1 << PB2));
+    DDRB &= (~(1 << PB1));
 
     joystick_dir_t joystick_y_dir;
     slider_pos_t slider_current_pos, slider_new_pos;
@@ -136,8 +116,10 @@ int main()
 
     while (1)
     {
+        bluetooth_transmit("H");
         if (!active_game)
         {
+
             joystick_get_relative_pos();
 
             joystick_y_dir = joystick_get_y_dir();
@@ -193,16 +175,16 @@ int main()
                 else if (can_msg_receive.id == 1)
                 {
                     active_game = 0;
-                    
+
                     oled_reset();
-                    if (menu_update_highscores(strcpy((char *)malloc(strlen(tp) + 1) , tp), main_menu_nodes[1], MAX_NUMBER_OF_HIGHSCORES))
+                    if (menu_update_highscores(strcpy((char *)malloc(strlen(tp) + 1), tp), main_menu_nodes[1], MAX_NUMBER_OF_HIGHSCORES))
                     {
                         oled_print_centered_message("NEW HIGHSCORE", 8, 7, 0);
                     }
-                    
+
                     oled_print_final_score(tp);
                     oled_reset();
-                    
+
                     menu_init_highlighted_node();
                     menu_print_menu();
                     score = 0;
@@ -228,14 +210,25 @@ int main()
             can_message_send(&can_msg_send);
             slider_current_pos.right_pos = slider_new_pos.right_pos;
         }
-        if (PINB & (1 << PB2))
+        if (PINB & (1 << PB1))
         {
             can_msg_send.id = 3;
             can_msg_send.data[0] = 0xFF & 1;
             can_message_send(&can_msg_send);
         }
 
-        _delay_ms(20);
+        //UART_2_transmit("A");
+        /*
+        if (UART_2_available)
+        {
+            printf("In loop\n\r");
+        } else
+        {
+            {
+                printf("Loop broken\n\r");
+            }
+        }
+        */
     }
     return 0;
 }

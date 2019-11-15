@@ -161,7 +161,7 @@ void oled_print_welcome_message(void)
 
 void oled_print_final_score(char *score)
 {
-    oled_print_centered_message("Final score:", 8, 1, 0);
+    oled_print_centered_message("Final score", 8, 1, 0);
     for (uint8_t blink = 0; blink < 4; blink++)
     {
         oled_clear_line(4);

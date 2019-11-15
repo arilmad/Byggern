@@ -19,7 +19,6 @@ void UART_init(int ubrr)
 
 int UART_transmit(char data, FILE *stream)
 {
-
     /* Wait for empty transmit buffer */
     while (!(UCSR0A & (1 << UDRE0)))
         ;

@@ -86,13 +86,14 @@ int main()
     uint16_t max_encoder_value;
     int16_t ref;
     int8_t active_game = 0;
+    int16_t temp;
     pid_init(35, 1, 6);
 
     sei();
 
     while (1)
     {
-        if ((can_message_read(&response))) // Returns 0 when successfully read
+        if ((can_message_read(&response)))
         {
             if (response.id == 4)
             {
@@ -102,7 +103,6 @@ int main()
                 max_encoder_value = motor_calibrate();
                 ref = 0;
             }
-            //printf("%d\r\n", response.id);
             else if (active_game)
             {
                 if (response.id == 1)
@@ -111,8 +111,7 @@ int main()
                 }
                 else if (response.id == 2)
                 {
-                    int16_t temp = response.data[0];
-                    temp -= 50;
+                    temp = response.data[0] - 50;
                     ref = -(int16_t)(double)((temp / 50.0) * max_encoder_value);
                 }
                 else if (response.id == 3)
@@ -128,12 +127,9 @@ int main()
             }
         }
 
-        encoder_value = encoder_read();
-
-        //printf("%d\r\n", encoder_value);
-
         if (pid_flag)
         {
+            encoder_value = encoder_read();
             int16_t u = pid_update(ref, encoder_value);
             motor_drive(u);
             pid_flag = 0;

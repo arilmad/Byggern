@@ -1,5 +1,5 @@
-#ifndef _SLIDER_H_
-#define _SLIDER_H_
+#ifndef __SLIDER_H__
+#define __SLIDER_H__
 
 typedef struct
 {

@@ -1,12 +1,11 @@
-#ifndef _JOYSTICK_H_
-#define _JOYSTICK_H_
+#ifndef __JOYSTICK_H__
+#define __JOYSTICK_H__
 
 #include <avr/interrupt.h>
 #include <stdlib.h>
 #include <avr/io.h>
 
 #include "adc.h"
-
 
 #define max(a, b) \
     ({ __typeof__ (a) _a = (a); \
@@ -17,7 +16,6 @@
     ({ __typeof__ (a) _a = (a); \
         __typeof__ (b) _b = (b); \
         _a < _b ? _a : _b; })
-
 
 volatile int joystick_button_pressed;
 

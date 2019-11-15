@@ -1,5 +1,4 @@
-#include "game.h"
-#include "../../lib/uart/uart.h"
+#include "ir.h"
 #define IR_threshold 30
 
 volatile uint8_t game_over_flag = 0;
