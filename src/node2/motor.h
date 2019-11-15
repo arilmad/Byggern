@@ -11,9 +11,9 @@ typedef enum
     LEFT,
 } motor_dir_t;
 
-void motor_init( void );
-void motor_drive( int16_t speed );
-void motor_stop( void );
-uint16_t motor_calibrate( void );
+void motor_init(void);
+void motor_drive(int16_t speed);
+void motor_stop(void);
+uint16_t motor_calibrate(void);
 
 #endif

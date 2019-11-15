@@ -13,5 +13,4 @@ void encoder_init();
 void encoder_reset();
 int16_t encoder_read();
 
-
 #endif

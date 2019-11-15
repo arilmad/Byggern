@@ -21,19 +21,20 @@ volatile uint8_t score_flag = 0;
 volatile uint8_t solenoid_flag = 0;
 volatile uint8_t start_score = 0;
 
-
 ISR(TIMER1_OVF_vect)
 {
     pid_flag = 1;
-    
+
     static int i = 0;
-    if (i < 20) { i++; }
-    else 
-    { 
+    if (i < 20)
+    {
+        i++;
+    }
+    else
+    {
         solenoid_flag = 1;
         i = 0;
     }
-
 }
 
 ISR(TIMER2_OVF_vect)
@@ -42,18 +43,18 @@ ISR(TIMER2_OVF_vect)
     if (i < 350)
     {
         i++;
-    } else
+    }
+    else
     {
         score_flag = 1;
         i = 0;
     }
-    
 }
 
 void timer1_init()
 {
-    TCCR1B |= (1<<CS10);
-    TIMSK1 |= (1<<TOIE1);
+    TCCR1B |= (1 << CS10);
+    TIMSK1 |= (1 << TOIE1);
     TCNT1 = 0;
 }
 
@@ -71,8 +72,8 @@ int main()
     timer1_init();
     timer2_init();
 
-    UART_init( MYUBRR );
-    can_init( MODE_NORMAL );
+    UART_init(MYUBRR);
+    can_init(MODE_NORMAL);
     servo_init();
     ir_init();
     motor_init();
@@ -89,11 +90,12 @@ int main()
 
     sei();
 
-    while(1)
+    while (1)
     {
         if ((can_message_read(&response))) // Returns 0 when successfully read
         {
-            if (response.id == 4) {
+            if (response.id == 4)
+            {
                 active_game = 1;
                 servo_set_pos(50);
                 ir_reset_game_over_flag();
@@ -101,7 +103,8 @@ int main()
                 ref = 0;
             }
             //printf("%d\r\n", response.id);
-            else if (active_game){  
+            else if (active_game)
+            {
                 if (response.id == 1)
                 {
                     servo_set_pos(response.data[0]);
@@ -110,9 +113,10 @@ int main()
                 {
                     int16_t temp = response.data[0];
                     temp -= 50;
-                    ref = -(int16_t)(double)((temp/50.0) * max_encoder_value);    
+                    ref = -(int16_t)(double)((temp / 50.0) * max_encoder_value);
                 }
-                else if (response.id == 3){
+                else if (response.id == 3)
+                {
                     if (solenoid_flag)
                     {
                         solenoid_trigger();
@@ -121,16 +125,14 @@ int main()
                         ir_reset_game_over_flag();
                     }
                 }
-
             }
         }
 
         encoder_value = encoder_read();
 
-
         //printf("%d\r\n", encoder_value);
 
-        if(pid_flag)
+        if (pid_flag)
         {
             int16_t u = pid_update(ref, encoder_value);
             motor_drive(u);
@@ -143,20 +145,18 @@ int main()
             message_send.id = 0;
             can_message_send(&message_send);
         }
-        
+
         if (ir_get_game_over_flag() && start_score)
         {
             printf("Run if\r\n");
             active_game = 0;
             start_score = 0;
-            
+
             message_send.id = 1;
             can_message_send(&message_send);
         }
 
         _delay_ms(20);
-
     }
     return 0;
 }
-

@@ -3,17 +3,19 @@
 #define F_CPU 4915200
 #include <util/delay.h>
 
-
-uint8_t oled_centered_msg_start_column( char* msg, uint8_t char_width )
+uint8_t oled_centered_msg_start_column(char *msg, uint8_t char_width)
 {
     uint8_t length = 0;
-    while(msg[length] != '\0') { length++; }
-    return ( (128 - length*char_width) / 2 );
+    while (msg[length] != '\0')
+    {
+        length++;
+    }
+    return ((128 - length * char_width) / 2);
 }
 
-void oled_print_centered_message( char* msg, uint8_t char_width, uint8_t row, uint8_t inverted )
+void oled_print_centered_message(char *msg, uint8_t char_width, uint8_t row, uint8_t inverted)
 {
-    uint8_t col = oled_centered_msg_start_column( msg, char_width );
+    uint8_t col = oled_centered_msg_start_column(msg, char_width);
     oled_pos(row, col);
     oled_printf(msg, char_width, inverted);
 }
@@ -92,30 +94,35 @@ void oled_init(void)
     oled_reset();
 }
 
-void oled_print(char* c, uint8_t font_size, uint8_t highlight) {
+void oled_print(char *c, uint8_t font_size, uint8_t highlight)
+{
     uint8_t font_val = (int)(*c) - ASCII_OFFSET;
 
-  
-    for(int i = 0; i < font_size; i++)
+    for (int i = 0; i < font_size; i++)
     {
         if (highlight)
         {
-            oled_write_data(~pgm_read_byte(&(font5[font_val][i])));             
-        } else if (font_size == 8)
+            oled_write_data(~pgm_read_byte(&(font5[font_val][i])));
+        }
+        else if (font_size == 8)
         {
-            oled_write_data(pgm_read_byte(&(font8[font_val][i])));  
-        } else
+            oled_write_data(pgm_read_byte(&(font8[font_val][i])));
+        }
+        else
         {
-            oled_write_data(pgm_read_byte(&(font5[font_val][i])));  
-        }  
+            oled_write_data(pgm_read_byte(&(font5[font_val][i])));
+        }
     }
 }
 
-void oled_printf(char* string, uint8_t font_size, uint8_t highlight) {
+void oled_printf(char *string, uint8_t font_size, uint8_t highlight)
+{
     int i = 0;
-    while (1){
+    while (1)
+    {
         char c = string[i];
-        if(c == '\0'){
+        if (c == '\0')
+        {
             break;
         }
         i++;
@@ -123,20 +130,19 @@ void oled_printf(char* string, uint8_t font_size, uint8_t highlight) {
     }
 }
 
-void oled_print_bitmap(const unsigned char* bitmap)
+void oled_print_bitmap(const unsigned char *bitmap)
 {
     uint8_t page = 0;
-    oled_pos(page,0);
-    for(uint16_t i = 0; i < (128 * 8); i++) 
+    oled_pos(page, 0);
+    for (uint16_t i = 0; i < (128 * 8); i++)
     {
         oled_write_data(pgm_read_byte(&(bitmap[i])));
-        if (!((i+1) % 128))
+        if (!((i + 1) % 128))
         {
             page++;
             oled_pos(page, 0);
         }
     }
-
 }
 
 void oled_print_welcome_message(void)
@@ -153,11 +159,10 @@ void oled_print_welcome_message(void)
     oled_printf("Main Menu", 5, 0);
 }
 
-
-void oled_print_final_score ( char* score )
+void oled_print_final_score(char *score)
 {
     oled_print_centered_message("Final score:", 8, 1, 0);
-    for ( uint8_t blink = 0; blink < 4; blink++)
+    for (uint8_t blink = 0; blink < 4; blink++)
     {
         oled_clear_line(4);
         _delay_ms(500);

@@ -6,14 +6,14 @@ volatile uint8_t game_over_flag = 0;
 
 void ir_under_threshold(uint8_t IR_state)
 {
-    if (IR_state < IR_threshold) 
+    if (IR_state < IR_threshold)
     {
         game_over_flag = 1;
     }
 }
 
 void ir_init()
-{   
+{
     adc_init(ir_under_threshold);
 }
 

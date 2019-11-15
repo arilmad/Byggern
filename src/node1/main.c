@@ -2,7 +2,7 @@
 
 #define BAUD 9600
 #define MYUBRR F_CPU / 16 / BAUD - 1
-#define TEN_MS 19200/4
+#define TEN_MS 19200 / 4
 #include <stdint.h>
 #include <avr/io.h>
 #include <util/delay.h>
@@ -42,50 +42,47 @@ ISR(TIMER0_OVF_vect)
 
 void init_timer();
 */
-char* main_menu_nodes[] = {
+char *main_menu_nodes[] = {
     "Play Game",
-    "Highscores"
-};
+    "Highscores"};
 
-char* play_game_nodes[] = {
+char *play_game_nodes[] = {
     "Play Manual",
     "Play Auto",
-    "Play Voice"
-};
+    "Play Voice"};
 
-char* highscore_nodes[] = {
+menu_t Highscore;
+char *highscore_nodes[] = {
     "0",
     "0",
     "0",
     "0",
-    "0"     
-};
+    "0"};
 
-
-void generate_menu(){
+void generate_menu()
+{
     menu_t MainMenu = menu_get_main_menu();
     menu_generate_children(MainMenu, main_menu_nodes, 2);
     menu_t PlayGame = MainMenu->child;
     menu_generate_children(PlayGame, play_game_nodes, 3);
-    menu_t Highscore = PlayGame->sibling;
+    Highscore = PlayGame->sibling;
     menu_generate_children(Highscore, highscore_nodes, 5);
     //printf("%s\r\n", PlayGame->name);
 }
 
-void update_highscores( char* score )
+void update_highscores(char *score)
 {
-    char* tp1;
-    char* tp2;
+    char *tp1;
+    char *tp2;
 
-    
-    for ( uint8_t i = 0; i < 5; i++ )
+    for (uint8_t i = 0; i < 5; i++)
     {
-        if ( atoi(score) > atoi(highscore_nodes[i]) )
+        if (atoi(score) > atoi(highscore_nodes[i]))
         {
             tp1 = highscore_nodes[i];
             highscore_nodes[i] = score;
 
-            for ( uint8_t j = i+1; j < 5; j++ )
+            for (uint8_t j = i + 1; j < 5; j++)
             {
                 tp2 = highscore_nodes[j];
                 highscore_nodes[j] = tp1;
@@ -98,11 +95,10 @@ void update_highscores( char* score )
     generate_menu();
 }
 
-
 int main()
 {
-    cli(); 
-    
+    cli();
+
     UART_init(MYUBRR);
     xmem_init();
     oled_init();
@@ -114,19 +110,18 @@ int main()
 
     can_init(MODE_NORMAL);
 
-    DDRE |= (1<<PE0);
+    DDRE |= (1 << PE0);
 
-    DDRB &= (~(1<<PB2));
+    DDRB &= (~(1 << PB2));
 
     joystick_dir_t joystick_y_dir;
     slider_pos_t slider_current_pos, slider_new_pos;
 
     can_message_t can_msg_send = {0, 8, 0x00};
-    
+
     can_message_t can_msg_receive;
 
-    char* menu_select;
-
+    char *menu_select;
 
     const unsigned char *picture = harald;
     oled_print_bitmap(harald);
@@ -146,11 +141,10 @@ int main()
     while (1)
     {
         if (!active_game)
-        {        
+        {
             joystick_get_relative_pos();
 
             joystick_y_dir = joystick_get_y_dir();
-
 
             if (joystick_y_dir != NEUTRAL)
             {
@@ -164,50 +158,49 @@ int main()
                 {
                     menu_scroll_highlighted_node(joystick_y_dir);
                 }
-
             }
 
             if (joystick_button_pressed)
             {
-                if(!menu_change_menu_level()) // No child available
+                if (!menu_change_menu_level()) // No child available
                 {
                     menu_select = menu_get_highlighted_node_name();
-                    if ( menu_select == play_game_nodes[0] )
+                    if (menu_select == play_game_nodes[0])
                     {
                         can_msg_send.id = 4;
                         can_message_send(&can_msg_send);
                         active_game = 1;
-                        
+
                         oled_reset();
                         oled_print_centered_message("Game on!", 8, 1, 0);
                         oled_print_centered_message("Current score", 8, 2, 0);
-                        
-                    } else if (menu_select == play_game_nodes[1])
+                    }
+                    else if (menu_select == play_game_nodes[1])
                     {
                         can_msg_send.id = 5;
                         can_message_send(&can_msg_send);
                     }
-                    
                 }
                 joystick_button_pressed = 0;
             }
-        } else
+        }
+        else
         {
-            if((can_message_read(&can_msg_receive)))
+            if ((can_message_read(&can_msg_receive)))
             {
-                if ( can_msg_receive.id == 0 )
+                if (can_msg_receive.id == 0)
                 {
-                    score ++;
+                    score++;
                     sprintf(tp, "%d", score);
                     oled_print_centered_message(tp, 8, 4, 0);
-                    
-                } else if ( can_msg_receive.id == 1 )
+                }
+                else if (can_msg_receive.id == 1)
                 {
                     active_game = 0;
-                    
+
                     oled_reset();
-                    update_highscores( tp );
-                    oled_print_final_score( tp );
+                    update_highscores(tp);
+                    oled_print_final_score(tp);
                     oled_reset();
 
                     menu_print_menu();
@@ -215,8 +208,7 @@ int main()
                 }
             }
         }
-        
-        
+
         slider_new_pos = slider_get_relative_pos();
         if (abs(slider_new_pos.left_pos - slider_current_pos.left_pos) > 3)
         {
@@ -235,16 +227,14 @@ int main()
             can_message_send(&can_msg_send);
             slider_current_pos.right_pos = slider_new_pos.right_pos;
         }
-        if (PINB & (1 << PB2)) {
+        if (PINB & (1 << PB2))
+        {
             can_msg_send.id = 3;
             can_msg_send.data[0] = 0xFF & 1;
             can_message_send(&can_msg_send);
         }
-        
 
-       _delay_ms(20);
-
+        _delay_ms(20);
     }
     return 0;
 }
-

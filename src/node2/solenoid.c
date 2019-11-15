@@ -9,7 +9,7 @@ void solenoid_init()
 
 void solenoid_trigger()
 {
-    PORTB &= (~( 1 << PB4 ));
+    PORTB &= (~(1 << PB4));
     _delay_ms(25);
     PORTB |= (1 << PB4);
 }
