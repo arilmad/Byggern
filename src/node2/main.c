@@ -5,7 +5,7 @@
 #include "../../lib/uart/uart.h"
 
 #include "servo.h"
-#include "game.h"
+#include "ir.h"
 #include "motor.h"
 #include "pid.h"
 #include "encoder.h"
@@ -65,6 +65,7 @@ void timer2_init()
     TCNT2 = 0;
 }
 
+
 int main()
 {
     cli();
@@ -91,28 +92,34 @@ int main()
 
     sei();
 
+    int i;
+    scanf("Enter a number: %d", &i);
+    printf("You entered %d", i);
+
     while (1)
     {
-        if ((can_message_read(&response)))
+        if (can_message_read(&response))
         {
+            
             if (response.id == 4)
             {
                 active_game = 1;
-                servo_set_pos(50);
+                servo_set_pos(122);
                 ir_reset_game_over_flag();
                 max_encoder_value = motor_calibrate();
                 ref = 0;
-            }
+            } 
+
             else if (active_game)
             {
                 if (response.id == 1)
                 {
-                    servo_set_pos(response.data[0]);
+                    servo_set_pos((uint8_t)response.data[0]);
                 }
                 else if (response.id == 2)
                 {
-                    temp = response.data[0] - 50;
-                    ref = -(int16_t)(double)((temp / 50.0) * max_encoder_value);
+                    temp = (uint8_t)response.data[0] - 122 ;
+                    ref = -(int16_t)(double)((temp / 122.0) * max_encoder_value);
                 }
                 else if (response.id == 3)
                 {
@@ -124,6 +131,7 @@ int main()
                         ir_reset_game_over_flag();
                     }
                 }
+                
             }
         }
 
@@ -144,7 +152,6 @@ int main()
 
         if (ir_get_game_over_flag() && start_score)
         {
-            printf("Run if\r\n");
             active_game = 0;
             start_score = 0;
 

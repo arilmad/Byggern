@@ -11,12 +11,12 @@ void servo_set_pos(uint8_t pos)
     {
         pos = 0;
     }
-    else if (pos > 100)
+    else if (pos > 255)
     {
-        pos = 100;
+        pos = 255;
     }
 
-    uint16_t pwm_value = (int)(2950 + (pos * 39));
+    uint16_t pwm_value = (int)(2950 + (pos * 15));
 
     pwm_set_duty_cycle(pwm_value);
 }
