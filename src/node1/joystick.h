@@ -6,18 +6,7 @@
 #include <avr/io.h>
 
 #include "adc.h"
-
-#define max(a, b) \
-    ({ __typeof__ (a) _a = (a); \
-        __typeof__ (b) _b = (b); \
-        _a > _b ? _a : _b; })
-
-#define min(a, b) \
-    ({ __typeof__ (a) _a = (a); \
-        __typeof__ (b) _b = (b); \
-        _a < _b ? _a : _b; })
-
-volatile int joystick_button_pressed;
+#include "../../lib/macros.h"
 
 typedef struct
 {
@@ -34,10 +23,14 @@ typedef enum
     NEUTRAL
 } joystick_dir_t;
 
+uint8_t joystick_get_button_pressed_flag(void);
+void joystick_reset_button_pressed_flag(void);
+
 void joystick_init(void);
+
 joystick_pos_t joystick_get_relative_pos(void);
+
 joystick_dir_t joystick_get_x_dir(void);
 joystick_dir_t joystick_get_y_dir(void);
-int joystick_button_poll(void);
 
 #endif

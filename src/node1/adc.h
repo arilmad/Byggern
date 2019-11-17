@@ -1,12 +1,12 @@
-#ifndef _ADC_H_
-#define _ADC_H_
+#ifndef __ADC_H__
+#define __ADC_H__
 
 #define F_CPU 4915200
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include <stdint.h>
 
+#include <stdint.h>
 
 typedef enum
 {
@@ -17,7 +17,5 @@ typedef enum
 } adc_channel_t;
 
 uint8_t adc_read(uint8_t channel);
-void adc_calibrate(void);
-void pos_read(void);
 
 #endif

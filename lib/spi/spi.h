@@ -4,9 +4,6 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-
-volatile int spi_interrupt_flag;
-
 void spi_init(void);
 
 void spi_transmit(char data);

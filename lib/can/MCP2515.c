@@ -1,12 +1,5 @@
 #include "MCP2515.h"
 
-void mcp2515_init(char mode)
-{
-    spi_init();
-    mcp2515_reset();
-    
-    mcp2515_modify(MCP_CANCTRL, MODE_MASK, mode);
-}
 void mcp2515_reset()
 {
     spi_activate_chipselect();
@@ -14,6 +7,24 @@ void mcp2515_reset()
     spi_deactivate_chipselect();
     _delay_ms(20);
 }
+
+void mcp2515_modify(char address, char mask, char mode)
+{
+    spi_activate_chipselect();
+    spi_transmit(MCP_BITMOD);
+    spi_transmit(address);
+    spi_transmit(mask);
+    spi_transmit(mode);
+    spi_deactivate_chipselect();
+}
+
+void mcp2515_init(char mode)
+{
+    spi_init();
+    mcp2515_reset();
+    mcp2515_modify(MCP_CANCTRL, MODE_MASK, mode);
+}
+
 char mcp2515_read(char address)
 {
     char data;
@@ -24,21 +35,13 @@ char mcp2515_read(char address)
     spi_deactivate_chipselect();
     return data;
 }
+
 void mcp2515_write(char address, char data)
 {
     spi_activate_chipselect();
     spi_transmit(MCP_WRITE);
     spi_transmit(address);
     spi_transmit(data);
-    spi_deactivate_chipselect();
-}
-void mcp2515_modify(char address, char mask, char mode)
-{
-    spi_activate_chipselect();
-    spi_transmit(MCP_BITMOD);
-    spi_transmit(address);
-    spi_transmit(mask);
-    spi_transmit(mode);
     spi_deactivate_chipselect();
 }
 

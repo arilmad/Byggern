@@ -3,8 +3,8 @@
 #define BAUD 9600
 #define BT_BAUD 9600
 
-#define MYUBRR F_CPU / 16 / BAUD - 1
-#define BT_MYUBRR 31
+#define UBRR F_CPU / 16 / BAUD - 1
+#define BT_UBRR F_CPU / 16 / BT_BAUD - 1
 
 #define MAX_NUMBER_OF_HIGHSCORES 5
 
@@ -31,7 +31,7 @@ char *main_menu_nodes[] = {
     "Highscores"};
 
 char *play_game_nodes[] = {
-    "Play Manual",
+    "Play From Board",
     "Play From Phone",
     "Play Voice"};
 
@@ -50,68 +50,74 @@ int main()
 {
     cli();
 
-    UART_init(MYUBRR);
-    bluetooth_init(BT_MYUBRR);
+    UART_init(UBRR);
+    bluetooth_init(BT_UBRR);
+    can_init(MODE_NORMAL);
+
     xmem_init();
     oled_init();
+
     _delay_ms(40);
+
     menu_init();
     generate_menu();
     menu_init_highlighted_node();
+
     joystick_init();
 
-    can_init(MODE_NORMAL);
-
     DDRE |= (1 << PE0);
-
     DDRB &= (~(1 << PB1));
 
     joystick_dir_t joystick_y_dir;
     slider_pos_t slider_current_pos, slider_new_pos;
 
     can_message_t can_msg_send = {0, 8, 0x00};
-
     can_message_t can_msg_receive;
 
-    char *menu_select;
-
-    const unsigned char *picture = harald;
-    oled_print_bitmap(harald);
-
-    oled_print_welcome_message();
-
     uint8_t enter_menu = 1;
-
-    slider_current_pos = slider_read_pos();
-
-    //init_timer();
     uint8_t active_game = 0;
     uint8_t control_bluetooth = 0;
     uint8_t control_iocard = 0;
+
+    uint8_t bt_int_val;
+    uint8_t tp_int;
 
     uint8_t update_motor = 0;
     uint8_t update_servo = 0;
     uint8_t update_solenoid = 0;
 
-    uint8_t motor_value = -1;
-    uint8_t servo_value = -1;
+    int16_t motor_value = -1;
+    int16_t servo_value = -1;
 
     uint16_t score = 0;
-    uint8_t bt_int_val;
+
+    char *data;
+    char *menu_select;
+
+    char tp[10];
+    char tp_char;
+
+    const unsigned char *picture = harald;
 
     sei();
+
+    //init_timer();
+    oled_print_bitmap(harald);
+    oled_print_welcome_message();
+    slider_current_pos = slider_read_pos();
 
     while (1)
     {
         if (!active_game)
         {
-
             joystick_get_relative_pos();
 
             joystick_y_dir = joystick_get_y_dir();
 
             if (joystick_y_dir != NEUTRAL)
             {
+                _delay_ms(150);
+
                 if (enter_menu)
                 {
                     oled_reset();
@@ -124,7 +130,7 @@ int main()
                 }
             }
 
-            if (joystick_button_pressed)
+            if (joystick_get_button_pressed_flag())
             {
                 if (!menu_change_menu_level()) // No child available
                 {
@@ -139,17 +145,17 @@ int main()
                         control_bluetooth = 1;
                         active_game = 1;
                     }
-                    else
-                        return;
+                    if (active_game)
+                    {
+                        can_msg_send.id = 4;
+                        can_message_send(&can_msg_send);
 
-                    can_msg_send.id = 4;
-                    can_message_send(&can_msg_send);
-
-                    oled_reset();
-                    oled_print_centered_message("Game on!", 8, 1, 0);
-                    oled_print_centered_message("Current score", 8, 2, 0);
+                        oled_reset();
+                        oled_print_centered_message("Game on!", 8, 1, 0);
+                        oled_print_centered_message("Current score", 8, 2, 0);
+                    }
                 }
-                joystick_button_pressed = 0;
+                joystick_reset_button_pressed_flag();
             }
         }
 
@@ -157,7 +163,7 @@ int main()
         {
             if ((can_message_read(&can_msg_receive)))
             {
-                char tp[10];
+
                 if (can_msg_receive.id == 0)
                 {
                     score++;
@@ -167,10 +173,17 @@ int main()
                 else if (can_msg_receive.id == 1)
                 {
                     active_game = 0;
+                    control_bluetooth = 0;
+                    control_iocard = 0;
+
+                    char *tp_copy = strcpy((char *)malloc(strlen(tp) + 1), tp);
+                    menu_update_highscores(tp_copy, main_menu_nodes[1], MAX_NUMBER_OF_HIGHSCORES);
 
                     oled_reset();
-                    if (menu_update_highscores(strcpy((char *)malloc(strlen(tp) + 1), tp), main_menu_nodes[1], MAX_NUMBER_OF_HIGHSCORES))
+
+                    if (menu_get_new_highscore_flag())
                     {
+                        menu_reset_new_highscore_flag();
                         oled_print_centered_message("NEW HIGHSCORE", 8, 7, 0);
                     }
 
@@ -210,19 +223,16 @@ int main()
 
         if (control_bluetooth)
         {
-            char *data;
-            char tp_char;
-            uint8_t tp_int;
-            while (bluetooth_available())
+            if (bluetooth_available())
             {
                 cli();
                 data = bluetooth_read();
-                sscanf(data, "%c %d", &tp_char, &tp_int);
+                int n = sscanf(data, "%c %d", &tp_char, &tp_int);
                 sei();
-                printf("Char: %c, Value: %d", tp_char, tp_int);
-                /*
+
                 if (tp_char == 'A')
                 {
+                    printf("A pressed!!\n\r");
                     update_solenoid = 1;
                 }
                 else if ((tp_char == 'B') && (tp_int >= 0 && tp_int <= 255))
@@ -234,24 +244,24 @@ int main()
                 {
                     motor_value = tp_int;
                     update_motor = 1;
-                }*/
+                }
             }
-        }
-
-        if (update_motor)
-        {
-            can_msg_send.id = 1;
-            can_msg_send.data[0] = motor_value;
-            can_message_send(&can_msg_send);
-            update_motor = 0;
         }
 
         if (update_servo)
         {
-            can_msg_send.id = 2;
+            can_msg_send.id = 1;
             can_msg_send.data[0] = servo_value;
             can_message_send(&can_msg_send);
             update_servo = 0;
+        }
+
+        if (update_motor)
+        {
+            can_msg_send.id = 2;
+            can_msg_send.data[0] = motor_value;
+            can_message_send(&can_msg_send);
+            update_motor = 0;
         }
 
         if (update_solenoid)

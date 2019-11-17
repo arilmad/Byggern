@@ -1,17 +1,16 @@
 #include "encoder.h"
-#include "../../lib/uart/uart.h"
-
-void encoder_init()
-{
-    DDRH |= (1 << PH3) | (1 << PH5) | (1 << PH6);
-    encoder_reset();
-}
 
 void encoder_reset()
 {
     PORTH &= ~(1 << PH6);
     _delay_us(50);
     PORTH |= (1 << PH6);
+}
+
+void encoder_init()
+{
+    DDRH |= (1 << PH3) | (1 << PH5) | (1 << PH6);
+    encoder_reset();
 }
 
 int16_t encoder_read()
@@ -33,5 +32,6 @@ int16_t encoder_read()
     PORTH |= (1 << PH5); // Set !OE high
 
     val = (int16_t)(((high_val & 0xFF) << 8) | (0xFF & low_val));
+
     return val;
 }

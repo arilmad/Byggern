@@ -1,5 +1,5 @@
-#ifndef __MCP2515_H
-#define __MCP2515_H
+#ifndef __MCP2515_H__
+#define __MCP2515_H__
 
 #if defined(__AVR_ATmega162__)
 #define F_CPU 4915200
@@ -169,11 +169,9 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_MERRF 0x80
 
 void mcp2515_init(char mode);
-void mcp2515_reset(void);
 char mcp2515_read(char address);
 void mcp2515_write(char address, char data);
 void mcp2515_modify(char address, char mask, char mode);
-char mcp2515_status(void);
 void mcp2515_rts(char buffer);
 
 #endif

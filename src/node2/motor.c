@@ -25,17 +25,15 @@ void motor_drive(int16_t speed)
         dir = LEFT;
 
     if (dir == LEFT)
-    {
         PORTH |= (1 << PH1);
-    }
+
     else
-    {
         PORTH &= ~(1 << PH1);
-    }
+
     motor_send(abs(speed));
 }
 
-void motor_stop(void)
+void motor_stop()
 {
     motor_send(0);
 }
@@ -44,6 +42,7 @@ uint16_t motor_calibrate()
 {
     uint16_t counter = 10000;
     int16_t pos = encoder_read();
+
     motor_drive(100);
 
     while (1)

@@ -1,6 +1,4 @@
-#include "adc.h"
 #include "slider.h"
-
 
 slider_pos_t slider_read_pos(void)
 {

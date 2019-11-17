@@ -7,14 +7,8 @@ void servo_init()
 
 void servo_set_pos(uint8_t pos)
 {
-    if (pos < 0)
-    {
-        pos = 0;
-    }
-    else if (pos > 255)
-    {
-        pos = 255;
-    }
+    pos = max(pos, 0);
+    pos = min(pos, 255);
 
     uint16_t pwm_value = (int)(2950 + (pos * 15));
 

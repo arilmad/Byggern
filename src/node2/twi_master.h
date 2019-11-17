@@ -1,3 +1,6 @@
+#ifndef __TWI_MASTER_H__
+#define __TWI_MASTER_H__
+
 /*****************************************************************************
 *
 * Atmel Corporation
@@ -107,3 +110,5 @@ unsigned char TWI_Get_Data_From_Transceiver( unsigned char *, unsigned char );
 // TWI Miscellaneous status codes
 #define TWI_NO_STATE               0xF8  // No relevant state information available; TWINT = “0”
 #define TWI_BUS_ERROR              0x00  // Bus error due to an illegal START or STOP condition
+
+#endif

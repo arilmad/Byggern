@@ -2,6 +2,7 @@
 #define __MOTOR_H__
 
 #include <avr/io.h>
+#include <stdint.h>
 
 #include "twi_master.h"
 

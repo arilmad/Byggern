@@ -9,8 +9,7 @@
 #include <avr/io.h>
 #include <avr/delay.h>
 
-void encoder_init();
-void encoder_reset();
-int16_t encoder_read();
+void encoder_init(void);
+int16_t encoder_read(void);
 
 #endif
