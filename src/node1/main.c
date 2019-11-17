@@ -21,6 +21,7 @@
 #include "../../assets/bitmaps.h"
 #include "xmem.h"
 #include "joystick.h"
+#include "io_button.h"
 #include "slider.h"
 #include "oled.h"
 #include "menu.h"
@@ -63,10 +64,8 @@ int main()
     generate_menu();
     menu_init_highlighted_node();
 
+    io_button_init();
     joystick_init();
-
-    DDRE |= (1 << PE0);
-    DDRB &= (~(1 << PB1));
 
     joystick_dir_t joystick_y_dir;
     slider_pos_t slider_current_pos, slider_new_pos;
@@ -101,7 +100,6 @@ int main()
 
     sei();
 
-    //init_timer();
     oled_print_bitmap(harald);
     oled_print_welcome_message();
     slider_current_pos = slider_read_pos();
@@ -172,6 +170,7 @@ int main()
                 }
                 else if (can_msg_receive.id == 1)
                 {
+                    cli();
                     active_game = 0;
                     control_bluetooth = 0;
                     control_iocard = 0;
@@ -193,83 +192,81 @@ int main()
                     menu_init_highlighted_node();
                     menu_print_menu();
                     score = 0;
+                    sei();
                 }
             }
-        }
 
-        if (!active_game)
-            continue;
 
-        if (control_iocard)
-        {
-            slider_new_pos = slider_read_pos();
-            if (abs(slider_new_pos.left_pos - slider_current_pos.left_pos) > 5)
+            if (control_iocard)
             {
-                servo_value = (0xFF & slider_new_pos.left_pos);
-                slider_current_pos.left_pos = slider_new_pos.left_pos;
-                update_servo = 1;
-            }
-            if (abs(slider_new_pos.right_pos - slider_current_pos.right_pos) > 5)
-            {
-                motor_value = (0xFF & slider_new_pos.right_pos);
-                slider_current_pos.right_pos = slider_new_pos.right_pos;
-                update_motor = 1;
-            }
-            if (PINB & (1 << PB1))
-            {
-                update_solenoid = 1;
-            }
-        }
-
-        if (control_bluetooth)
-        {
-            if (bluetooth_available())
-            {
-                cli();
-                data = bluetooth_read();
-                int n = sscanf(data, "%c %d", &tp_char, &tp_int);
-                sei();
-
-                if (tp_char == 'A')
+                slider_new_pos = slider_read_pos();
+                if (abs(slider_new_pos.left_pos - slider_current_pos.left_pos) > 5)
                 {
-                    printf("A pressed!!\n\r");
-                    update_solenoid = 1;
-                }
-                else if ((tp_char == 'B') && (tp_int >= 0 && tp_int <= 255))
-                {
-                    servo_value = tp_int;
+                    servo_value = (0xFF & slider_new_pos.left_pos);
+                    slider_current_pos.left_pos = slider_new_pos.left_pos;
                     update_servo = 1;
                 }
-                else if (tp_char == 'C' && (tp_int >= 0 && tp_int <= 255))
+                if (abs(slider_new_pos.right_pos - slider_current_pos.right_pos) > 5)
                 {
-                    motor_value = tp_int;
+                    motor_value = (0xFF & slider_new_pos.right_pos);
+                    slider_current_pos.right_pos = slider_new_pos.right_pos;
                     update_motor = 1;
                 }
+                if (io_button_get_left_button_press())
+                {
+                    update_solenoid = 1;
+                }
             }
-        }
 
-        if (update_servo)
-        {
-            can_msg_send.id = 1;
-            can_msg_send.data[0] = servo_value;
-            can_message_send(&can_msg_send);
-            update_servo = 0;
-        }
+            if (control_bluetooth)
+            {
+                if (bluetooth_available())
+                {
+                    cli();
+                    data = bluetooth_read();
+                    int n = sscanf(data, "%c %d", &tp_char, &tp_int);
+                    sei();
 
-        if (update_motor)
-        {
-            can_msg_send.id = 2;
-            can_msg_send.data[0] = motor_value;
-            can_message_send(&can_msg_send);
-            update_motor = 0;
-        }
+                    if (tp_char == 'A')
+                    {
+                        update_solenoid = 1;
+                    }
+                    else if ((tp_char == 'B') && (tp_int >= 0 && tp_int <= 255))
+                    {
+                        servo_value = tp_int;
+                        update_servo = 1;
+                    }
+                    else if (tp_char == 'C' && (tp_int >= 0 && tp_int <= 255))
+                    {
+                        motor_value = tp_int;
+                        update_motor = 1;
+                    }
+                }
+            }
 
-        if (update_solenoid)
-        {
-            can_msg_send.id = 3;
-            can_msg_send.data[0] = (0xFF & 1);
-            can_message_send(&can_msg_send);
-            update_solenoid = 0;
+            if (update_servo)
+            {
+                can_msg_send.id = 1;
+                can_msg_send.data[0] = servo_value;
+                can_message_send(&can_msg_send);
+                update_servo = 0;
+            }
+
+            if (update_motor)
+            {
+                can_msg_send.id = 2;
+                can_msg_send.data[0] = motor_value;
+                can_message_send(&can_msg_send);
+                update_motor = 0;
+            }
+
+            if (update_solenoid)
+            {
+                can_msg_send.id = 3;
+                can_msg_send.data[0] = (0xFF & 1);
+                can_message_send(&can_msg_send);
+                update_solenoid = 0;
+            }
         }
     }
     return 0;
