@@ -1,5 +1,7 @@
-#include <stdint.h>
-#include <avr/interrupt.h>
+#define F_CPU 16000000
+
+#define BAUD 9600
+#define UBRR F_CPU / 16 / BAUD - 1
 
 #include "../../lib/can/can_driver.h"
 #include "../../lib/uart/uart.h"
@@ -11,10 +13,8 @@
 #include "encoder.h"
 #include "solenoid.h"
 
-#define F_CPU 16000000
-
-#define BAUD 9600
-#define UBRR F_CPU / 16 / BAUD - 1
+#include <stdint.h>
+#include <avr/interrupt.h>
 
 volatile uint8_t pid_flag = 0;
 volatile uint8_t score_flag = 0;

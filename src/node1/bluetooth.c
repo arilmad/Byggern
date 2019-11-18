@@ -1,8 +1,14 @@
-#include "bluetooth.h"
-
 #define BT_RX_QUEUE_SIZE 64
 
-volatile uint8_t bluetooth_available_flag;
+#include "bluetooth.h"
+#include "q.h"
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+volatile uint8_t bluetooth_msg_available_flag;
 volatile static queue_t bt_rx_queue;
 
 ISR(USART1_RXC_vect)
@@ -12,7 +18,7 @@ ISR(USART1_RXC_vect)
     q_enqueue(&bt_rx_queue, c);
 
     if (c == '\n' && !q_is_empty(&bt_rx_queue))
-        bluetooth_available_flag = 1;
+        bluetooth_msg_available_flag = 1;
 }
 
 void bluetooth_init(int ubrr)
@@ -22,14 +28,14 @@ void bluetooth_init(int ubrr)
     UCSR1B = (1 << RXEN1) | (1 << TXEN1) | (1 << RXCIE1);
     UCSR1C |= (1 << UCSZ10) | (1 << UCSZ11) | (1 << URSEL1) | (1 << USBS1);
 
-    bluetooth_available_flag = 0;
+    bluetooth_msg_available_flag = 0;
 
     q_init(&bt_rx_queue, BT_RX_QUEUE_SIZE);
 }
 
-int bluetooth_available()
+int bluetooth_msg_available()
 {
-    return (bluetooth_available_flag);
+    return bluetooth_msg_available_flag;
 }
 
 int bluetooth_TX_char(char data)
@@ -63,7 +69,7 @@ const char *bluetooth_read()
 
         if (q_is_empty(&bt_rx_queue))
         {
-            bluetooth_available_flag = 0;
+            bluetooth_msg_available_flag = 0;
             return '\0';
         }
     }
@@ -77,13 +83,13 @@ const char *bluetooth_read()
 
         if (i > 7)
         {
-            bluetooth_available_flag = 0;
+            bluetooth_msg_available_flag = 0;
             return '\0';
         }
     }
     c[i] = '\0';
 
     if (q_is_empty(&bt_rx_queue))
-        bluetooth_available_flag = 0;
+        bluetooth_msg_available_flag = 0;
     return c;
 }

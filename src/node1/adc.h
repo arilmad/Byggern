@@ -1,13 +1,6 @@
 #ifndef __ADC_H__
 #define __ADC_H__
 
-#define F_CPU 4915200
-
-#include <avr/io.h>
-#include <util/delay.h>
-
-#include <stdint.h>
-
 typedef enum
 {
     JOY_X = 4,

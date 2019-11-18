@@ -1,6 +1,9 @@
-#include "ir.h"
-
 #define IR_threshold 30
+
+#include "ir.h"
+#include "adc.h"
+
+#include <stdint.h>
 
 volatile uint8_t game_over_flag = 0;
 

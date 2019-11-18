@@ -1,9 +1,6 @@
 #ifndef __SPI_H__
 #define __SPI_H__
 
-#include <avr/interrupt.h>
-#include <avr/io.h>
-
 void spi_init(void);
 
 void spi_transmit(char data);

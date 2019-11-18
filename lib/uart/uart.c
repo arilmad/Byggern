@@ -1,5 +1,9 @@
 #include "uart.h"
 
+#include <stdint.h>
+#include <stdio.h>
+#include <avr/io.h>
+
 int UART_transmit(char data, FILE *stream)
 {
     /* Wait for empty transmit buffer */

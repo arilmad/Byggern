@@ -8,14 +8,6 @@
 
 #define MAX_NUMBER_OF_HIGHSCORES 5
 
-#include <stdint.h>
-#include <string.h>
-#include <avr/io.h>
-#include <util/delay.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <avr/interrupt.h>
-
 #include "../../lib/uart/uart.h"
 #include "../../lib/can/can_driver.h"
 #include "../../assets/bitmaps.h"
@@ -26,6 +18,14 @@
 #include "oled.h"
 #include "menu.h"
 #include "bluetooth.h"
+
+#include <stdint.h>
+#include <string.h>
+#include <avr/io.h>
+#include <util/delay.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <avr/interrupt.h>
 
 char *main_menu_nodes[] = {
     "Play Game",
@@ -218,13 +218,14 @@ int main()
                 }
             }
 
-            if (control_bluetooth)
+            else if (control_bluetooth)
             {
-                if (bluetooth_available())
+                if (bluetooth_msg_available())
                 {
                     cli();
                     data = bluetooth_read();
-                    int n = sscanf(data, "%c %d", &tp_char, &tp_int);
+
+                    sscanf(data, "%c %d", &tp_char, &tp_int);
                     sei();
 
                     if (tp_char == 'A')

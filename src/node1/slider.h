@@ -1,8 +1,6 @@
 #ifndef __SLIDER_H__
 #define __SLIDER_H__
 
-#include "adc.h"
-
 typedef struct
 {
     int16_t left_pos;

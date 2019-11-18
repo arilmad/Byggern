@@ -1,5 +1,8 @@
 #include "spi.h"
 
+#include <avr/interrupt.h>
+#include <avr/io.h>
+
 //Initializes the Atmega162 to be a master.
 void spi_init(void)
 {

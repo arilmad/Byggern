@@ -1,5 +1,8 @@
 #include "q.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 void q_init(queue_t *q, unsigned int size)
 {
     q->size = size;

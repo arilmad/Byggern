@@ -1,15 +1,6 @@
 #ifndef __CAN_DRIVER_H__
 #define __CAN_DRIVER_H__
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/common.h>
-
-#include "../spi/spi.h"
-#include "MCP2515.h"
-
-volatile int can_interrupt_flag;
-
 typedef struct can_message
 {
     int8_t id;

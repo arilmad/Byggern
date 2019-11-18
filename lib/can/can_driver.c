@@ -1,4 +1,10 @@
 #include "can_driver.h"
+#include "../spi/spi.h"
+#include "MCP2515.h"
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/common.h>
 
 void can_init(char mode)
 {

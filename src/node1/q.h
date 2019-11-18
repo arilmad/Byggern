@@ -1,9 +1,6 @@
 #ifndef __Q_H__
 #define __Q_H__
 
-#include <stdio.h>
-#include <stdlib.h>
-
 typedef struct queue
 {
     unsigned int size;

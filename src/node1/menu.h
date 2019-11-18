@@ -1,10 +1,6 @@
 #ifndef __MENU_H__
 #define __MENU_H__
 
-#include <stdint.h>
-#include <stdlib.h>
-
-#include "oled.h"
 #include "joystick.h"
 
 typedef struct Menu *menu_t;

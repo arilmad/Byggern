@@ -1,5 +1,10 @@
 #include "joystick.h"
+#include "adc.h"
+#include "../../lib/macros.h"
 
+#include <avr/interrupt.h>
+#include <stdlib.h>
+#include <avr/io.h>
 
 static int16_t x_max;
 static int16_t y_max;

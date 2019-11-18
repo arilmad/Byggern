@@ -1,13 +1,6 @@
 #ifndef __JOYSTICK_H__
 #define __JOYSTICK_H__
 
-#include <avr/interrupt.h>
-#include <stdlib.h>
-#include <avr/io.h>
-
-#include "adc.h"
-#include "../../lib/macros.h"
-
 typedef struct
 {
     int16_t x;

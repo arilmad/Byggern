@@ -1,6 +1,3 @@
-#include <stdint.h>
-#include "adc.h"
-
 #ifndef __IR_H__
 #define __IR_H__
 

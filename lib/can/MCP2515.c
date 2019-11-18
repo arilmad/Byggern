@@ -1,4 +1,13 @@
+#if defined(__AVR_ATmega162__)
+#define F_CPU 4915200
+#elif defined(__AVR_ATmega2560__)
+#define F_CPU 16000000
+#endif
+
 #include "MCP2515.h"
+#include "../spi/spi.h"
+
+#include <util/delay.h>
 
 void mcp2515_reset()
 {

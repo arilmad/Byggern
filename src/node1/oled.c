@@ -1,4 +1,13 @@
+#define F_CPU 4915200
+#define ASCII_OFFSET 32
+
 #include "oled.h"
+#include "xmem.h"
+#include "../../assets/fonts.h"
+
+#include <stdint.h>
+#include <util/delay.h>
+#include <avr/pgmspace.h>
 
 void oled_write_command(uint8_t command)
 {

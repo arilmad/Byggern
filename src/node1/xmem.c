@@ -1,5 +1,8 @@
 #include "xmem.h"
 
+#include <stdint.h>
+#include <avr/io.h>
+
 void xmem_init(void)
 {
     MCUCR |= (1 << SRE);

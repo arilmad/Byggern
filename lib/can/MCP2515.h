@@ -1,16 +1,6 @@
 #ifndef __MCP2515_H__
 #define __MCP2515_H__
 
-#if defined(__AVR_ATmega162__)
-#define F_CPU 4915200
-#elif defined(__AVR_ATmega2560__)
-#define F_CPU 16000000
-#endif
-
-#include <util/delay.h>
-
-#include "../spi/spi.h"
-
 /*
 mcp2515.h
 

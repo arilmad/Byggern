@@ -1,6 +1,16 @@
 #include "motor.h"
+#include "twi_master.h"
+
+#include <avr/io.h>
+#include <stdint.h>
 
 static int16_t max_encoder_value;
+
+typedef enum
+{
+    RIGHT,
+    LEFT,
+} motor_dir_t;
 
 void motor_init(void)
 {
@@ -48,13 +58,11 @@ uint16_t motor_calibrate()
     while (1)
     {
         while (counter)
-        {
             counter--;
-        }
+
         if (pos == encoder_read())
-        {
             break;
-        }
+
         counter = 10000;
         pos = encoder_read();
     }
@@ -68,13 +76,11 @@ uint16_t motor_calibrate()
     while (1)
     {
         while (counter)
-        {
             counter--;
-        }
+
         if (pos == encoder_read())
-        {
             break;
-        }
+
         counter = 10000;
         pos = encoder_read();
     }
@@ -87,17 +93,13 @@ uint16_t motor_calibrate()
     while (encoder_read() > max_encoder_value / 2)
     {
         while (counter)
-        {
             counter--;
-        }
+
         counter = 10000;
     }
 
     motor_stop();
     encoder_reset();
-    pos = encoder_read();
-
-    printf("%d\n\r", pos);
 
     return max_encoder_value / 2;
 }

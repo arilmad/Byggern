@@ -1,16 +1,6 @@
 #ifndef __OLED_H__
 #define __OLED_H__
 
-#define F_CPU 4915200
-#define ASCII_OFFSET 32
-
-#include "../../assets/fonts.h"
-#include "xmem.h"
-
-#include <stdint.h>
-#include <util/delay.h>
-#include <avr/pgmspace.h>
-
 void oled_init(void);
 void oled_reset(void);
 void oled_pos(uint8_t row, uint8_t col);

@@ -1,5 +1,8 @@
 #include "pwm.h"
 
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
 void pwm_init(uint16_t duty_cycle) // Duty cycle relative position
 {
     TCCR1A = (1 << WGM11) | (1 << COM1A1);

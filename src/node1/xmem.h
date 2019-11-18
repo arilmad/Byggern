@@ -1,9 +1,6 @@
 #ifndef __XMEM_H__
 #define __XMEM_H__
 
-#include <stdint.h>
-#include <avr/io.h>
-
 typedef enum
 {
     OLED_COMMAND_ADDRESS = 0x1000,
