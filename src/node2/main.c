@@ -68,7 +68,7 @@ ISR(TIMER2_OVF_vect)
 /* timer1_init()
     * No prescaling
     * Enable input capture interrupt
-    * Initiate counter at 0
+    * Initialize counter at 0
  */
 void timer1_init()
 {
@@ -80,7 +80,7 @@ void timer1_init()
 /* timer2_init()
     * clk_io / 64 prescaling
     * Enable input capture interrupt
-    * Initiate counter at 0
+    * Initialize counter at 0
  */
 void timer2_init()
 {
@@ -89,6 +89,21 @@ void timer2_init()
     TCNT2 = 0;
 }
 
+/* main()
+    * The node2 main loop is the heart of the game,
+    * and sets up all sensors and motors for the 
+    * game board. Before receiving a CAN msg from
+    * node1 calling for a new game to start, it will
+    * refuse to take any external commands. 
+    *
+    * Whilst in active_game mode it will receive motor
+    * and position references from node1, and report
+    * back periodically to node1 from the solenoid is
+    * triggered for the first time (start_score=1) 
+    * until the IR-sensor is triggered, meaning game 
+    * is over. When the IR-sensor is triggered, a CAN 
+    * msg will be sent to node1 and the game resets.   
+ */
 int main()
 {
     cli();
@@ -151,7 +166,7 @@ int main()
                         solenoid_trigger();
                         solenoid_flag = 0;
                         start_score_flag = 1;
-                        ir_reset_game_over_flag();
+                        ir_reset_ir_triggered_flag();
                     }
                 }
             }
@@ -172,7 +187,7 @@ int main()
             can_message_send(&message_send);
         }
 
-        if (ir_get_game_over_flag() && start_score_flag)
+        if (ir_get_ir_triggered_flag() && start_score_flag)
         {
             active_game = 0;
             start_score = 0;

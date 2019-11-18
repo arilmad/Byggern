@@ -1,5 +1,8 @@
 #include "adc.h"
 
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
 static void (*fp)(uint8_t);
 
 ISR(TIMER0_OVF_vect)
