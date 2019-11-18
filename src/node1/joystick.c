@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <avr/io.h>
 
+/*  */
+
 static int16_t x_max;
 static int16_t y_max;
 
@@ -22,21 +24,35 @@ const int8_t JOYSTICK_SENSITIVITY_THRESHOLD = 5;
 
 volatile uint8_t joystick_button_pressed_flag;
 
+/*ISR(INT0_vect)
+    * Interrupt service routine 
+    * for the button
+*/
 ISR(INT0_vect)
 {
     joystick_button_pressed_flag = 1;
 }
 
+/*uint8_t joystick_get_button_pressed_flag()
+    * Returns the state of the button pressed flag.
+ */
 uint8_t joystick_get_button_pressed_flag()
 {
     return joystick_button_pressed_flag;
 }
 
+/*void joystick_reset_button_pressed_flag()
+    * Resets the the button pressed flag
+*/
 void joystick_reset_button_pressed_flag()
 {
     return joystick_button_pressed_flag = 0;
 }
 
+/*void joystick_interrupt_init()
+    * Initialize the interrupt 
+    * on the button pin.
+*/
 void joystick_interrupt_init()
 {
     GICR |= (1 << INT0);
@@ -44,12 +60,20 @@ void joystick_interrupt_init()
     MCUCR &= ~(1 << ISC00);
 }
 
+/*void joystick_set_center()
+    * Sets the center position for the jpystick.
+*/
 void joystick_set_center()
 {
     x_center = adc_read(JOY_X);
     y_center = adc_read(JOY_Y);
 }
 
+/*void joystick_init()
+    * Initialize the joystick.
+    * Enables the interrupt for the button.
+    * Sets the center for the joystick.
+*/
 void joystick_init()
 {
     joystick_interrupt_init();
@@ -62,6 +86,11 @@ void joystick_init()
     y_dir = NEUTRAL;
 }
 
+/* joystick_pos_t joystick_read_pos()
+    * Reads the joystick position.
+    * Checks if it is below a given threshold.
+    * Returns zero if it is.
+*/
 joystick_pos_t joystick_read_pos()
 {
     joystick_pos_t position;
@@ -78,6 +107,9 @@ joystick_pos_t joystick_read_pos()
     return position;
 }
 
+/* void joystick_set_dir(joystick_pos_t pos)
+    * Sets the direction for the joystick.
+*/
 void joystick_set_dir(joystick_pos_t pos)
 {
     if (pos.x > 0)
@@ -99,6 +131,10 @@ void joystick_set_dir(joystick_pos_t pos)
         y_dir = NEUTRAL;
 }
 
+/* void joystick_calibrate(joystick_pos_t pos)
+    * Calibrates the minimum and maximum values
+    * for the x and y directions of the joystick.
+*/
 void joystick_calibrate(joystick_pos_t pos)
 {
     if (x_dir == RIGHT)
@@ -114,6 +150,12 @@ void joystick_calibrate(joystick_pos_t pos)
         y_min = min(pos.y, y_min);
 }
 
+/* joystick_pos_t joystick_get_relative_pos()
+    * Returns the relative position
+    * The relative position is 
+    * between 0 and 100, given the 
+    * current maximum and minimum values
+ */
 joystick_pos_t joystick_get_relative_pos()
 {
     joystick_pos_t position = joystick_read_pos();
@@ -135,6 +177,9 @@ joystick_pos_t joystick_get_relative_pos()
     return position;
 }
 
+/* joystick_dir_t joystick_get_x/y_dir()
+    * Returns the x and y direction.
+*/
 joystick_dir_t joystick_get_x_dir()
 {
     return x_dir;

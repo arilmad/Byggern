@@ -11,6 +11,11 @@
 volatile uint8_t bluetooth_msg_available_flag;
 volatile static queue_t bt_rx_queue;
 
+/* ISR(USART_RXC_vect)
+    * The USART1 receive flag will trigger
+    * the interrupt. Registers are read
+    * and put into a queue.
+*/
 ISR(USART1_RXC_vect)
 {
     char c = UDR1;
@@ -21,6 +26,11 @@ ISR(USART1_RXC_vect)
         bluetooth_msg_available_flag = 1;
 }
 
+/* bluetooth_init(int ubrr)
+    * Initialize the bluetooth with the 
+    * given baud rate, and setup the
+    * queue for messages.
+*/
 void bluetooth_init(int ubrr)
 {
     UBRR1H = (unsigned char)(ubrr >> 8);
@@ -33,11 +43,17 @@ void bluetooth_init(int ubrr)
     q_init(&bt_rx_queue, BT_RX_QUEUE_SIZE);
 }
 
+/*bluetooth_msg_available()
+    * Checks if the bluetooth available flag is set.
+*/
 int bluetooth_msg_available()
 {
     return bluetooth_msg_available_flag;
 }
 
+/*bluetooth_TX_char(char data)
+    * Sends a char to the output register of the USART
+*/
 int bluetooth_TX_char(char data)
 {
     while (!(UCSR1A & (1 << UDRE1)))
@@ -47,6 +63,9 @@ int bluetooth_TX_char(char data)
     return 0;
 }
 
+/* bluetooth_send(char *str)
+    * Sends the string on bluetooth
+*/
 void bluetooth_send(char *str)
 {
     int a = 0;
@@ -56,6 +75,10 @@ void bluetooth_send(char *str)
     }
 }
 
+/* *bluetooth_read()
+    * Reads a bluetooth message from the queue
+    * Checks for start ('\r') and end ('\n') char.
+*/
 const char *bluetooth_read()
 {
     static char c[9];
