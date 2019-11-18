@@ -4,7 +4,6 @@
 
 #include "encoder.h"
 
-#include <stdint.h>
 #include <avr/io.h>
 #include <avr/delay.h>
 

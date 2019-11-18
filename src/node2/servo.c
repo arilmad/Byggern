@@ -3,7 +3,6 @@
 #include "../../lib/macros.h"
 
 #include <avr/io.h>
-#include <stdint.h>
 
 void servo_init()
 {

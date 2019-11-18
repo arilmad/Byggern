@@ -3,8 +3,6 @@
 #include "ir.h"
 #include "adc.h"
 
-#include <stdint.h>
-
 /* ir_triggered_flag
     * Indicates IR-sensor is triggered. Is
     * set by adc interrupt routine. 

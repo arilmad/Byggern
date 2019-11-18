@@ -7,8 +7,6 @@
 #include "pid.h"
 #include "../../lib/macros.h"
 
-#include <stdint.h>
-
 static int16_t Kp, Ki, Kd, e0, max_error;
 static int32_t sum_error, max_sum_error;
 

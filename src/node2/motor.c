@@ -1,8 +1,9 @@
 #include "motor.h"
 #include "twi_master.h"
+#include "encoder.h"
 
 #include <avr/io.h>
-#include <stdint.h>
+#include <stdlib.h>
 
 static int16_t max_encoder_value;
 

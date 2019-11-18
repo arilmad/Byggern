@@ -4,6 +4,7 @@
 #define UBRR F_CPU / 16 / BAUD - 1
 
 #include "../../lib/can/can_driver.h"
+#include "../../lib/can/MCP2515.h"
 #include "../../lib/uart/uart.h"
 
 #include "servo.h"
@@ -144,7 +145,7 @@ int main()
             {
                 active_game = 1;
                 servo_set_pos(122);
-                ir_reset_game_over_flag();
+                ir_reset_ir_triggered_flag();
                 max_encoder_value = motor_calibrate();
                 ref = 0;
             }
@@ -165,7 +166,7 @@ int main()
                     {
                         solenoid_trigger();
                         solenoid_flag = 0;
-                        start_score_flag = 1;
+                        start_score = 1;
                         ir_reset_ir_triggered_flag();
                     }
                 }
@@ -180,14 +181,14 @@ int main()
             pid_flag = 0;
         }
 
-        if (score_flag && start_score_flag)
+        if (score_flag && start_score)
         {
             score_flag = 0;
             message_send.id = 0;
             can_message_send(&message_send);
         }
 
-        if (ir_get_ir_triggered_flag() && start_score_flag)
+        if (ir_get_ir_triggered_flag() && start_score)
         {
             active_game = 0;
             start_score = 0;
