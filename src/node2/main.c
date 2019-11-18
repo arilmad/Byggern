@@ -16,12 +16,23 @@
 #include <stdint.h>
 #include <avr/interrupt.h>
 
+/* Various binary flags used by main loop.
+    * pid_flag signalizes control signal update. Set periodically.
+    * score_flag sets periodically and indicates that node1 should
+    * increment its score. CAN msg sent only whilst game is active.
+    * solenoid_flag sets periodically and ensures some time slack
+    * in between solenoid_trigger() calls.
+*/
 volatile uint8_t pid_flag = 0;
 volatile uint8_t score_flag = 0;
 volatile uint8_t solenoid_flag = 0;
 
-volatile uint8_t start_score = 0;
 
+/* ISR(TIMER1_OVF_vect)
+    * Upon each TIMER1 overflow, signalize pid control update.
+    * Upon every 20th TIMER1 overflow, signalize that
+    * solenoid is ready for use if need be.
+ */
 ISR(TIMER1_OVF_vect)
 {
     pid_flag = 1;
@@ -37,6 +48,10 @@ ISR(TIMER1_OVF_vect)
     }
 }
 
+/* ISR(TIMER2_OVF_vect)
+    * Set score_flag periodically. Score held by node 1 
+    * will increment every time score_flag is set.
+ */
 ISR(TIMER2_OVF_vect)
 {
     static int i = 0;
@@ -50,6 +65,11 @@ ISR(TIMER2_OVF_vect)
     }
 }
 
+/* timer1_init()
+    * No prescaling
+    * Enable input capture interrupt
+    * Initiate counter at 0
+ */
 void timer1_init()
 {
     TCCR1B |= (1 << CS10);
@@ -57,6 +77,11 @@ void timer1_init()
     TCNT1 = 0;
 }
 
+/* timer2_init()
+    * clk_io / 64 prescaling
+    * Enable input capture interrupt
+    * Initiate counter at 0
+ */
 void timer2_init()
 {
     TCCR2B |= (1 << CS20) | (1 << CS21);
@@ -79,6 +104,7 @@ int main()
     int16_t tp;
 
     int8_t active_game = 0;
+    uint8_t start_score = 0;
 
     timer1_init();
     timer2_init();
@@ -124,7 +150,7 @@ int main()
                     {
                         solenoid_trigger();
                         solenoid_flag = 0;
-                        start_score = 1;
+                        start_score_flag = 1;
                         ir_reset_game_over_flag();
                     }
                 }
@@ -139,14 +165,14 @@ int main()
             pid_flag = 0;
         }
 
-        if (score_flag && start_score)
+        if (score_flag && start_score_flag)
         {
             score_flag = 0;
             message_send.id = 0;
             can_message_send(&message_send);
         }
 
-        if (ir_get_game_over_flag() && start_score)
+        if (ir_get_game_over_flag() && start_score_flag)
         {
             active_game = 0;
             start_score = 0;
