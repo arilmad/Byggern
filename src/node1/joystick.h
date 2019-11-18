@@ -2,6 +2,8 @@
 #ifndef __JOYSTICK_H__
 #define __JOYSTICK_H__
 
+#include <stdint.h>
+
 /* Type defining the position of the joystick */
 typedef struct
 {

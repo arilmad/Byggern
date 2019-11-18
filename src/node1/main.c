@@ -10,6 +10,7 @@
 
 #include "../../lib/uart/uart.h"
 #include "../../lib/can/can_driver.h"
+#include "../../lib/can/MCP2515.h"
 #include "../../assets/bitmaps.h"
 #include "xmem.h"
 #include "joystick.h"

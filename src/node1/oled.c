@@ -5,7 +5,6 @@
 #include "xmem.h"
 #include "../../assets/fonts.h"
 
-#include <stdint.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 

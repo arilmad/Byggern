@@ -5,13 +5,11 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include <stdint.h>
 
 /* adc_read(uint8_t channel)
     * Reads the external memory address
-    * of the analog to digital converter
+    * of the analog to digital converter.
 */
-
 uint8_t adc_read(uint8_t channel)
 {
     *ext_adc = channel;

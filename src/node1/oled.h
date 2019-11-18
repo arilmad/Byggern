@@ -1,6 +1,8 @@
 #ifndef __OLED_H__
 #define __OLED_H__
 
+#include <stdint.h>
+
 void oled_init(void);
 void oled_reset(void);
 void oled_pos(uint8_t row, uint8_t col);

@@ -9,7 +9,7 @@
 #include <stdlib.h>
 
 volatile uint8_t bluetooth_msg_available_flag;
-volatile static queue_t bt_rx_queue;
+static queue_t bt_rx_queue;
 
 /* ISR(USART_RXC_vect)
     * The USART1 receive flag will trigger

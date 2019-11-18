@@ -3,6 +3,8 @@
 
 #include "joystick.h"
 
+#include <stdint.h>
+
 typedef struct Menu *menu_t;
 
 struct Menu

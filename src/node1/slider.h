@@ -1,6 +1,8 @@
 #ifndef __SLIDER_H__
 #define __SLIDER_H__
 
+#include <stdint.h>
+
 /* Defines the type of the slider position */
 typedef struct
 {

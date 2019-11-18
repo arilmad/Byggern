@@ -1,6 +1,8 @@
 #ifndef __CAN_DRIVER_H__
 #define __CAN_DRIVER_H__
 
+#include <stdint.h>
+
 typedef struct can_message
 {
     int8_t id;

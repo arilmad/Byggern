@@ -1,6 +1,8 @@
 #ifndef __XMEM_H__
 #define __XMEM_H__
 
+#include <stdint.h>
+
 /* 
     * Defines the base addresses 
     * for the different external 

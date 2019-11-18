@@ -1,7 +1,7 @@
 #include "xmem.h"
 
-#include <stdint.h>
 #include <avr/io.h>
+
 /* void xmem_init()
     * Initialize the registers used 
     * by the external memory.

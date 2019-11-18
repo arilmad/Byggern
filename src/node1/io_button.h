@@ -1,6 +1,8 @@
 #ifndef __IO_BUTTON__
 #define __IO_BUTTON__
 
+#include <stdint.h>
+
 /* Init function for the button */
 void io_button_init(void);
 
