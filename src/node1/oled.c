@@ -1,4 +1,8 @@
 #define F_CPU 4915200
+/* ASCII_OFFSET
+    * Offset between ascii values and 
+    * the word location in fonts.h
+*/
 #define ASCII_OFFSET 32
 
 #include "oled.h"
@@ -8,35 +12,57 @@
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 
+/* oled_write_command
+    * Write byte command to the OLED.
+*/
 void oled_write_command(uint8_t command)
 {
     base_address_t base_address = OLED_COMMAND_ADDRESS;
     xmem_write(command, 0x00, base_address);
 }
 
+/* oled_write_data
+    * Write char to the OLED.
+*/
 void oled_write_data(char c)
 {
     base_address_t base_address = OLED_DATA_ADDRESS;
     xmem_write(c, 0x00, base_address);
 }
 
+/* oled_goto_line
+    * 0 < line < 7. Set position
+    * to desired line on OLED.
+*/
 void oled_goto_line(uint8_t line)
 {
     oled_write_command(0xb0 | (line & 0x07));
 }
 
+/* oled_goto_column
+    * 0 < column < 127. Set position
+    * to desired column on OLED.
+*/
 void oled_goto_column(uint8_t column)
 {
     oled_write_command(column & 0x0f);
     oled_write_command(0x10 | column >> 4);
 }
 
+/* oled_pos
+    * Set row and column position on
+    * the OLED.
+*/
 void oled_pos(uint8_t row, uint8_t col)
 {
     oled_goto_line(row);
     oled_goto_column(col);
 }
 
+/* oled_clear_line
+    * Write zeros to the OLED
+    * for entire line.
+*/
 void oled_clear_line(uint8_t line)
 {
     oled_pos(line, 0);
@@ -44,13 +70,20 @@ void oled_clear_line(uint8_t line)
         oled_write_data(0b00000000);
 }
 
-void oled_reset(void)
+/* oled_reset
+    * Write zeros to the entire
+    * OLED.
+*/
+void oled_reset()
 {
     for (uint8_t line = 0; line < 8; line++)
         oled_clear_line(line);
 }
 
-void oled_init(void)
+/* oled_init
+    * Initialize OLED.
+*/
+void oled_init()
 {
     oled_write_command(0xae); // display off
     oled_write_command(0xa1); // segment remap
@@ -78,6 +111,9 @@ void oled_init(void)
     oled_reset();
 }
 
+/* oled_print
+    * Print single character to the OLED.
+*/
 void oled_print(char *c, uint8_t font_size, uint8_t highlight)
 {
     uint8_t font_val = (int)(*c) - ASCII_OFFSET;
@@ -95,6 +131,9 @@ void oled_print(char *c, uint8_t font_size, uint8_t highlight)
     }
 }
 
+/* oled_printf
+    * Print character sequence to the OLED.
+*/
 void oled_printf(char *string, uint8_t font_size, uint8_t highlight)
 {
     int i = 0;
@@ -108,6 +147,9 @@ void oled_printf(char *string, uint8_t font_size, uint8_t highlight)
     }
 }
 
+/* oled_print_bitmap
+    * Print bitmap to the OLED.
+*/
 void oled_print_bitmap(const unsigned char *bitmap)
 {
     uint8_t page = 0;
@@ -123,7 +165,10 @@ void oled_print_bitmap(const unsigned char *bitmap)
     }
 }
 
-void oled_print_welcome_message(void)
+/* oled_print_welcome_message
+    * Greet a new user!
+*/
+void oled_print_welcome_message()
 {
     oled_pos(0, 0);
     oled_printf("Welcome!", 5, 0);
@@ -137,6 +182,11 @@ void oled_print_welcome_message(void)
     oled_printf("Main Menu", 5, 0);
 }
 
+/* oled_centered_msg_start_column
+    * Calculate first column to start
+    * print in order to center the
+    * string on the OLED.
+*/
 uint8_t oled_centered_msg_start_column(char *msg, uint8_t char_width)
 {
     uint8_t length = 0;
@@ -147,6 +197,10 @@ uint8_t oled_centered_msg_start_column(char *msg, uint8_t char_width)
     return ((128 - length * char_width) / 2);
 }
 
+/* oled_print_centered_message
+    * Utilize oled_centered_msg_start_column
+    * and print desired message centered.
+*/
 void oled_print_centered_message(char *msg, uint8_t char_width, uint8_t row, uint8_t inverted)
 {
     uint8_t col = oled_centered_msg_start_column(msg, char_width);
@@ -154,6 +208,10 @@ void oled_print_centered_message(char *msg, uint8_t char_width, uint8_t row, uin
     oled_printf(msg, char_width, inverted);
 }
 
+/* oled_print_final_score
+    * A final score after game over is 
+    * printed in a flashy manner.
+*/
 void oled_print_final_score(char *score)
 {
     oled_print_centered_message("Final score", 8, 1, 0);

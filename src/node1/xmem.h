@@ -1,3 +1,10 @@
+/* xmem.h
+    * This part of the program is used
+    * to enable and utilize address space
+    * outside the internal SRAM of the 
+    * MCU.
+*/
+
 #ifndef __XMEM_H__
 #define __XMEM_H__
 
@@ -16,13 +23,8 @@ typedef enum
     SRAM_ADDRESS = 0x1800
 } base_address_t;
 
-/* Initialize the externa memory */
 void xmem_init(void);
-
-/* Writes data to the external memory */
 void xmem_write(uint8_t data, uint16_t addr, base_address_t base_address);
-
-/* Reads data from the external memory */
 uint8_t xmem_read(uint16_t addr, base_address_t base_address);
 
 #endif

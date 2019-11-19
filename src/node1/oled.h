@@ -1,3 +1,9 @@
+/* oled.h
+    * This part of the program is used
+    * communicate with the OLED found on
+    * the I/O card.
+*/
+¨
 #ifndef __OLED_H__
 #define __OLED_H__
 

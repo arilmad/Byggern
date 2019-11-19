@@ -62,13 +62,15 @@ void generate_menu()
     * a welcome message and a bitmap picture
     * of King Harald of Norway.
     * 
-    * The purpose of the main loop is to allow
+    * One purpose of the main loop is to allow
     * the user to navigate in the menu by using
     * the joystick on the I/O board. 
     * 
-    * Furthermore it supplies node2 with sensor
-    * data during an active game, and might even
-    * communicate with a phone via bluetooth.
+    * During active game, it supplies node2 with 
+    * sensor data from the I/O card or the BT 
+    * module, and receives from node2 periodic
+    * messages signalling score shall be in-
+    * cremented.
     * 
     * Node1 main also works with menu.c to keep
     * track of the top highscores.

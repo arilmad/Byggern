@@ -1,3 +1,10 @@
+/* menu.h
+    * This part of the program is used
+    * to generate and navigate a
+	* linked list structure used as menu
+	* on the I/O card OLED.
+*/
+
 #ifndef __MENU_H__
 #define __MENU_H__
 

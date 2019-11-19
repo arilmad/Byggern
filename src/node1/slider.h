@@ -1,3 +1,9 @@
+/* slider.h
+    * This part of the program is used
+    * interpret the position of the
+    * sliders on the I/O board.
+*/
+
 #ifndef __SLIDER_H__
 #define __SLIDER_H__
 
@@ -10,7 +16,6 @@ typedef struct
     int16_t right_pos;
 } slider_pos_t;
 
-/* Returns the slider position */
 slider_pos_t slider_read_pos(void);
 
 #endif
