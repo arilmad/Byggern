@@ -28,6 +28,11 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
+/*  * Main defines what nodes the
+    * menu shall consist of and
+    * their parent / sibling
+    * relationship.
+*/
 char *main_menu_nodes[] = {
     "Play Game",
     "Highscores"};
@@ -39,6 +44,10 @@ char *play_game_nodes[] = {
 
 char *highscore_nodes[] = {};
 
+/* generate_menu()
+    * Call menu.c build fns to create
+    * desired menu structure.
+*/
 void generate_menu()
 {
     menu_t MainMenu = menu_get_main_menu();
@@ -48,6 +57,22 @@ void generate_menu()
     menu_t Highscore = PlayGame->sibling;
 }
 
+/* main()
+    * The node1 main fn starts by printing 
+    * a welcome message and a bitmap picture
+    * of King Harald of Norway.
+    * 
+    * The purpose of the main loop is to allow
+    * the user to navigate in the menu by using
+    * the joystick on the I/O board. 
+    * 
+    * Furthermore it supplies node2 with sensor
+    * data during an active game, and might even
+    * communicate with a phone via bluetooth.
+    * 
+    * Node1 main also works with menu.c to keep
+    * track of the top highscores.
+*/
 int main()
 {
     cli();
