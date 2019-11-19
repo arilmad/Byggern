@@ -3,7 +3,7 @@
 #include "joystick_test.h"
 #include "uart.h"
 
-void joystick_test(void)
+void joystick_test()
 {
     volatile char *adc = (char *) 0x1400;
     uint16_t adc_size = 0x400;
