@@ -1,12 +1,11 @@
-#ifndef F_CPU
-#define F_CPU 16000000
-#endif
-
 #include "encoder.h"
 
 #include <avr/io.h>
 #include <avr/delay.h>
 
+/* encoder_reset()
+    * Toggle !RST to reset encoder
+*/
 void encoder_reset()
 {
     PORTH &= ~(1 << PH6);
@@ -14,12 +13,19 @@ void encoder_reset()
     PORTH |= (1 << PH6);
 }
 
+/* encoder_init()
+    * Set SEL, !OE and TRST to initialize encoder.
+*/
 void encoder_init()
 {
     DDRH |= (1 << PH3) | (1 << PH5) | (1 << PH6);
     encoder_reset();
 }
 
+/* encoder_read()
+    * Read procedure as described in motorbox.pdf.
+    * Return encoder value.
+*/
 int16_t encoder_read()
 {
     uint8_t high_val, low_val;

@@ -1,3 +1,9 @@
+/* adc.h
+    * This part of the program reads
+    * analog values from the I/O card
+    * and converts them to digital values.
+*/
+
 #ifndef __ADC_H__
 #define __ADC_H__
 

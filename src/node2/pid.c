@@ -1,6 +1,8 @@
+/* Control signal U guards */
 #define U_MAX 255
 #define U_MIN -255
 
+/* Compiler optimization and overflow guard */
 #define SCALING_FACTOR 1024
 #define MAX_I_TERM INT32_MAX / 2
 
@@ -10,6 +12,9 @@
 static int16_t Kp, Ki, Kd, e0, max_error;
 static int32_t sum_error, max_sum_error;
 
+/* pid_init()
+    * Controller constants are initialized by main.
+*/
 void pid_init(int16_t Kp_, int16_t Ki_, int16_t Kd_)
 {
     Kp = Kp_;
@@ -23,6 +28,10 @@ void pid_init(int16_t Kp_, int16_t Ki_, int16_t Kd_)
     e0 = 0;
 }
 
+/* pid_calculate_u()
+    * Calculate next control signal u. Called
+    * periodically from main.
+*/
 int16_t pid_calculate_u(int16_t ref, int16_t pos)
 {
     int16_t error, p_term, d_term;

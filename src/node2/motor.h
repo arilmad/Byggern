@@ -1,3 +1,9 @@
+/* motor.h
+    * This part of the program communicates
+    * with the motor controlling the racket's
+    * horizontal position.
+*/
+
 #ifndef __MOTOR_H__
 #define __MOTOR_H__
 

@@ -1,3 +1,9 @@
+/* spi.h
+    * This part of the program sets
+    * up the SPI communication driver
+    * for on-board serial communication.
+*/
+
 #ifndef __SPI_H__
 #define __SPI_H__
 

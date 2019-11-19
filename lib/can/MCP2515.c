@@ -9,6 +9,9 @@
 
 #include <util/delay.h>
 
+/* mcp2515_reset()
+    * Reset the CAN controller.
+*/
 void mcp2515_reset()
 {
     spi_activate_chipselect();
@@ -17,6 +20,9 @@ void mcp2515_reset()
     _delay_ms(20);
 }
 
+/* mcp2515_modify()
+    * Allows for CAN controller bit modification.
+*/
 void mcp2515_modify(char address, char mask, char mode)
 {
     spi_activate_chipselect();
@@ -27,6 +33,10 @@ void mcp2515_modify(char address, char mask, char mode)
     spi_deactivate_chipselect();
 }
 
+/* mcp2515_init()
+    * Initialize SPI and CAN controller with mode
+    * set by main.
+*/
 void mcp2515_init(char mode)
 {
     spi_init();
@@ -34,6 +44,9 @@ void mcp2515_init(char mode)
     mcp2515_modify(MCP_CANCTRL, MODE_MASK, mode);
 }
 
+/* mcp2515_read()
+    * Return data read from slave address.
+*/
 char mcp2515_read(char address)
 {
     char data;
@@ -45,6 +58,9 @@ char mcp2515_read(char address)
     return data;
 }
 
+/* mcp2515_write()
+    * Write data to slave.
+*/
 void mcp2515_write(char address, char data)
 {
     spi_activate_chipselect();
@@ -54,6 +70,9 @@ void mcp2515_write(char address, char data)
     spi_deactivate_chipselect();
 }
 
+/* mcp2515_status()
+    * Return status bit.
+*/
 char mcp2515_status(void)
 {
     char status;
@@ -64,6 +83,9 @@ char mcp2515_status(void)
     return status;
 }
 
+/* mcp2515_rts()
+    * Request to send.
+*/
 void mcp2515_rts(char buffer)
 {
     spi_activate_chipselect();

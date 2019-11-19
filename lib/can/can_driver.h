@@ -1,3 +1,9 @@
+/* can_driver.h
+    * This part of the program sets
+    * up the CAN communication protocol
+    * for inter-node communication.
+*/
+
 #ifndef __CAN_DRIVER_H__
 #define __CAN_DRIVER_H__
 

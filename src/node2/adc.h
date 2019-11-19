@@ -1,3 +1,9 @@
+/* adc.h
+    * This part of the program is used
+    * by ir.c to interpret the analog
+    * IR-sensor signal.
+*/
+
 #ifndef __ADC_H__
 #define __ADC_H__
 

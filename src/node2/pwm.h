@@ -1,3 +1,10 @@
+/* pwm.h
+    * This part of the program is used
+    * to generate a PWM signal used
+    * to control the servo controlling 
+    * the racket's angle.
+*/
+
 #ifndef __PWM_H__
 #define __PWM_H__
 

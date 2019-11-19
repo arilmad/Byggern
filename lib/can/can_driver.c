@@ -6,16 +6,29 @@
 #include <avr/interrupt.h>
 #include <avr/common.h>
 
+/* can_init()
+    * Initialize mcp2525 with mode
+    * specified by main.
+*/
 void can_init(char mode)
 {
     mcp2515_init(mode);
 }
 
+/* can_setmode()
+    * Modify CAN mode.
+*/
 void can_setmode(char mode)
 {
     mcp2515_modify(MCP_CANCTRL, MODE_MASK, mode);
 }
 
+/* can_message_read()
+    * Return 0 if no message is received. Derive
+    * message ID and data from message. Read only
+    * from RXB0SIDH since few unique message IDs 
+    * are used.
+*/
 uint8_t can_message_read(can_message_t* message)
 {
     if (!(mcp2515_read(MCP_CANINTF) & 0x01))
@@ -34,6 +47,11 @@ uint8_t can_message_read(can_message_t* message)
     return 1;
 }
 
+/* can_message_send()
+    * Send a pre-constructed can type message. High
+    * resolution IDs are not necessary, only TXB0SIDH
+    * is therefore used.
+*/
 void can_message_send(can_message_t* message)
 {
     mcp2515_write(MCP_TXB0SIDH, message->id);

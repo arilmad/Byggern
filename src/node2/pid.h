@@ -1,3 +1,10 @@
+/* pid.h
+    * This part of the program calculates
+    * control signal u for the horizontal
+    * position of the racket based on a
+    * reference and current position.
+*/
+
 #ifndef __PID_H__
 #define __PID_H__
 
