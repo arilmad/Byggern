@@ -9,5 +9,5 @@ This is term project in TTK4155 - Embedded and Industrial Computer Systems Desig
 ## Getting Started
 This project is written for and around two nodes consisting of an Atmel AVR ATMega162 and an Arduino MEGA.
 
-The goal with the term project is to make a "ping pong-machine" used to play a game. As well as learning a few things along the way. As how to set up an UART connection with the computer, reading and writing from external ram, getting various sensor data, and implementing differnet kind of communication protocols for the nodes to communicate.
+The goal with the term project is to make a "ping pong-machine" used to play a game. As well as learning a few things along the way. As how to set up an UART connection with the computer, reading and writing from external ram, getting various sensor data, and implementing different kinds of communication protocols for the nodes to communicate.
 
